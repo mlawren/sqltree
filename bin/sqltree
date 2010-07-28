@@ -123,9 +123,14 @@ The SQL column type of the (existing) primary key and parent columns.
 
 =item --path
 
-[optional] The (existing) column into which the tree path will be automatically
-calculated. This column should be defined as TEXT.
+[optional] The (existing) column into which the tree path will be
+automatically calculated. This column should be defined as TEXT or
+VARCHAR, and should be UNIQUE.
 
+=item --path_from
+
+[optional] When --path is given this option identifies the (existing)
+column from which path names will be built.
 
 =cut
 item --order
