@@ -20,19 +20,19 @@ my ($opt, $usage) = describe_options(
     [ 'help',       "print usage message and exit" ],
 );
 
-print($usage->text), exit 2 if $opt->help;
+print($usage->text), exit 2 if $opt->{help};
 
-my %args = map {$_ => $opt->$_} qw/
+my %args = map {$_ => $opt->{$_}} qw/
     dbtype drop table pk type parent path path_from order
 /;
 
 use Data::Dumper; $Data::Dumper::Indent = 1; $Data::Dumper::Maxdepth=2;
 warn Dumper(%args);
 
-if ( $opt->dbtype =~ m/(SQLite)|(Pg)/ ) {
+if ( $opt->{dbtype} =~ m/(SQLite)|(Pg)/ ) {
     my $prog_name = prog_name;
     my $date      = scalar gmtime;
-    my $dbtype    = $opt->dbtype;
+    my $dbtype    = $opt->{dbtype};
 
     print qq/
 -- --------------------------------------------------------------------
