@@ -4,7 +4,7 @@ use warnings;
 use base qw/Exporter/;
 use Carp qw/confess/;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @EXPORT_OK = qw/generate/;
 
 sub generate {
