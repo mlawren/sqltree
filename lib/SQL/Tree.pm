@@ -67,7 +67,7 @@ CREATE TABLE $tree_table (
     treeid    INTEGER PRIMARY KEY,
     parent    $pktype NOT NULL REFERENCES $table($pk) ON DELETE CASCADE,
     child     $pktype NOT NULL REFERENCES $table($pk) ON DELETE CASCADE,
-    depth     $pktype NOT NULL,
+    depth     INTEGER NOT NULL,
     UNIQUE (parent, child)
 );
 -- --------------------------------------------------------------------
@@ -295,7 +295,7 @@ CREATE TABLE $tree_table (
     treeid    SERIAL PRIMARY KEY,
     parent    $pktype NOT NULL REFERENCES $table($pk) ON DELETE CASCADE,
     child     $pktype NOT NULL REFERENCES $table($pk) ON DELETE CASCADE,
-    depth     $pktype NOT NULL,
+    depth     INTEGER NOT NULL,
     UNIQUE (parent, child)
 );
 

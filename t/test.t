@@ -29,10 +29,11 @@ foreach my $handle ( @handles ) {
 
     my $check_tree = sub {
         my $sql = shift;
+        my $args = shift;
         my $struct = shift;
         my $name = shift;
 
-        eval { $dbh->do( $sql ) };
+        eval { $dbh->do( $sql, undef, @$args ) };
         if ( $@ ) {
             diag $sql;
             die $@;
@@ -55,10 +56,11 @@ foreach my $handle ( @handles ) {
 
     my $check = sub {
         my $sql = shift;
+        my $args = shift;
         my $struct = shift;
         my $name = shift;
 
-        my $result = $dbh->selectall_arrayref( $sql );
+        my $result = $dbh->selectall_arrayref( $sql, undef, @$args );
 
 #        diag $sql;
 #        diag 'Wanted: '. Dumper( $struct );
@@ -76,7 +78,7 @@ foreach my $handle ( @handles ) {
         drop   => 1,
         table  => $table,
         pk     => 'id',
-        pktype => 'INTEGER',
+        pktype => 'VARCHAR',
         parent => 'parent',
     );
     
@@ -107,20 +109,20 @@ foreach my $handle ( @handles ) {
     }
 
     $check_tree->(
-    "INSERT INTO $table (id, codename) VALUES (1, 'a');",
+    "INSERT INTO $table (id, codename) VALUES (?, ?);", [1,'a'],
     [
         [1,1,0],
     ], 'insert 1');
 
     $check_tree->(
-    "INSERT INTO $table (id, codename) VALUES (2, 'b');",
+    "INSERT INTO $table (id, codename) VALUES (?, ?);",[2,'b'],
     [
         [1,1,0],
         [2,2,0],
     ], 'insert 2');
 
     $check_tree->(
-    "INSERT INTO $table (id, codename,parent) VALUES (3, 'c', 1);",
+    "INSERT INTO $table (id, codename,parent) VALUES (?, ?, ?);",[3,'c',1],
     [
         [1,1,0],
         [2,2,0],
@@ -129,7 +131,7 @@ foreach my $handle ( @handles ) {
     ], 'insert 3');
 
     $check_tree->(
-    "INSERT INTO $table (id, codename,parent) VALUES (4, 'd', 2);",
+    "INSERT INTO $table (id, codename,parent) VALUES (?, ?, ?);",[4, 'd', 2],
     [
         [1,1,0],
         [2,2,0],
@@ -140,7 +142,7 @@ foreach my $handle ( @handles ) {
     ], 'insert 4');
 
     $check_tree->(
-    "INSERT INTO $table (id, codename,parent) VALUES (5, 'e', 3);",
+    "INSERT INTO $table (id, codename,parent) VALUES (?, ?, ?);",[5, 'e', 3],
     [
         [1,1,0],
         [2,2,0],
@@ -154,7 +156,7 @@ foreach my $handle ( @handles ) {
     ], 'insert 5');
 
     # Moving some child object to become top-level object
-    $check_tree->( "UPDATE $table SET parent=NULL WHERE id=3;",
+    $check_tree->( "UPDATE $table SET parent=NULL WHERE id=?;",[3],
     [
         [1,1,0],
         [2,2,0],
@@ -166,7 +168,7 @@ foreach my $handle ( @handles ) {
     ], 'update 1');
 
     # Move some top-level object to become child object:
-    $check_tree->( "UPDATE $table SET parent=5 WHERE id=2;",
+    $check_tree->( "UPDATE $table SET parent=5 WHERE id=?;",[2],
     [
         [1,1,0],
         [2,2,0],
@@ -184,7 +186,7 @@ foreach my $handle ( @handles ) {
     # And the last way to update: move some child object under
     # new parent:
 
-    $check_tree->("UPDATE $table SET parent = 1 WHERE id = 5;",
+    $check_tree->("UPDATE $table SET parent = 1 WHERE id = ?;",[5],
     [
         [1,1,0],
         [2,2,0],
@@ -199,7 +201,7 @@ foreach my $handle ( @handles ) {
         [4,1,3],
     ], 'update 3');
 
-    $check_tree->("UPDATE $table SET parent = 1 WHERE id = 5;",
+    $check_tree->("UPDATE $table SET parent = 1 WHERE id = ?;",[5],
     [
         [1,1,0],
         [2,2,0],
@@ -219,9 +221,9 @@ foreach my $handle ( @handles ) {
         FROM $table o
         INNER JOIN ${table}_tree t
         ON o.id = t.parent
-        WHERE t.child = 1
+        WHERE t.child = ?
         ORDER BY t.depth DESC
-    ",
+    ",[1],
     [
         ['a'],
     ], 'select path as rows');
@@ -231,9 +233,9 @@ foreach my $handle ( @handles ) {
         FROM $table o
         INNER JOIN ${table}_tree t
         ON o.id = t.parent
-        WHERE t.child = 2
+        WHERE t.child = ?
         ORDER BY t.depth DESC
-    ",
+    ",[2],
     [
         ['a'],
         ['e'],
@@ -241,21 +243,22 @@ foreach my $handle ( @handles ) {
     ], 'select path as rows 2');
 
     throws_ok {
-        $dbh->do("UPDATE $table SET parent = 4 WHERE id = 1;");
+        $dbh->do("UPDATE $table SET parent = 4 WHERE id = ?;",undef,1);
     } qr/would create loop/;
 
     throws_ok {
-        $dbh->do("UPDATE $table SET id = 9 WHERE id = 2;");
+        $dbh->do("UPDATE $table SET id = 9 WHERE id = ?;",undef,2);
     } qr/Changing ids is forbidden/;
 
 
     # path implementation
     my $check_path = sub {
         my $sql = shift;
+        my $args = shift;
         my $struct = shift;
         my $name = shift;
 
-        eval { $dbh->do( $sql ) };
+        eval { $dbh->do( $sql, undef, @$args ) };
         if ( $@ ) {
             diag $sql;
             die $@;
@@ -319,7 +322,7 @@ foreach my $handle ( @handles ) {
         SELECT id,codename,parent,path
         FROM $table
         ORDER BY id
-    ",
+    ",[],
     [
         [1,'a',undef,'a'],
         [2,'b',undef,'b'],
@@ -328,7 +331,7 @@ foreach my $handle ( @handles ) {
         [5,'e',3,    'a/c/e'],
     ], 'select auto generated path');
 
-    $check_path->("UPDATE $table SET parent = NULL WHERE id = 3",
+    $check_path->("UPDATE $table SET parent = NULL WHERE id = ?",[3],
     [
         [1,'a',undef,'a'],
         [2,'b',undef,'b'],
@@ -337,7 +340,7 @@ foreach my $handle ( @handles ) {
         [5,'e',3,    'c/e'],
     ], 'update path 1');
 
-    $check_path->("UPDATE $table SET parent = 5 WHERE id = 2",
+    $check_path->("UPDATE $table SET parent = 5 WHERE id = ?",[2],
     [
         [1,'a',undef,'a'],
         [2,'b',5,    'c/e/b'],
@@ -345,7 +348,7 @@ foreach my $handle ( @handles ) {
         [4,'d',2,    'c/e/b/d'],
         [5,'e',3,    'c/e'],
     ], 'update path 2');
-    $check_path->("UPDATE $table SET parent = 1 WHERE id = 5",
+    $check_path->("UPDATE $table SET parent = 1 WHERE id = ?",[5],
     [
         [1,'a',undef,'a'],
         [2,'b',5,    'a/e/b'],
@@ -367,7 +370,7 @@ foreach my $handle ( @handles ) {
           s.id,s.codename,s.path
         order by
           path; 
-    ",
+    ",[],
     [
         [1,'a','a',0],
         [5,'e','a/e',1],
