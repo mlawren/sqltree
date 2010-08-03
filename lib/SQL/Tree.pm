@@ -751,12 +751,14 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
   use DBI;
 
   my %opts = (
-    dbtype => $dbtype,
-    table => $table,
-    pk => $pk_column,
-    parent => $parent_column,
-    drop => $bool,
-    type => $pktype,
+    dbtype    => $dbtype,
+    drop      => $bool,
+    table     => $table,
+    pk        => $pk_column,
+    pktype    => $pktype,
+    parent    => $parent_column,
+    path      => $path_column,
+    path_from => $visual_column,
   );
 
   my $dbh = DBI->connect(...);
@@ -766,8 +768,8 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
 
 =head1 DESCRIPTION
 
-B<SQL::Tree> generates the SQL for a herarchical data (tree)
-implementation using triggers, as described here:
+B<SQL::Tree> generates a herarchical data (tree) implementation for
+SQLite and PostgreSQL using triggers, as described here:
 
     http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
 
