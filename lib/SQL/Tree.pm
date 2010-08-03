@@ -5,10 +5,10 @@ use base qw/Exporter/;
 use Carp qw/confess/;
 
 our $VERSION = '0.02';
-our @EXPORT_OK = qw/generate/;
+our @EXPORT_OK = qw/generate_sql_tree/;
 
 
-sub generate {
+sub generate_sql_tree {
     my %opts = (
         @_,
     );
@@ -747,7 +747,7 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
 
 =head1 SYNOPSIS
 
-  use SQL::Tree qw/generate/;
+  use SQL::Tree qw/generate_sql_tree/;
   use DBI;
 
   my %opts = (
@@ -760,7 +760,7 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
   );
 
   my $dbh = DBI->connect(...);
-  foreach my $sql ( generate( %opts ) ) {
+  foreach my $sql ( generate_sql_tree( %opts ) ) {
     $dbh->do( $sql );
   }
 
@@ -776,7 +776,7 @@ statements:
 
 =over 4
 
-=item * generate( %opts ) -> @str
+=item * generate_sql_tree( %opts ) -> @str
 
 =back
 

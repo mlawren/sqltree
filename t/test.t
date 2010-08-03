@@ -18,7 +18,7 @@ my $home = getcwd;
 my $dir = File::Temp->newdir();
 ok(chdir($dir), "chdir $dir");
 
-use_ok('SQL::Tree', 'generate');
+use_ok('SQL::Tree', 'generate_sql_tree');
 
 
 foreach my $handle ( @handles ) {
@@ -98,7 +98,7 @@ foreach my $handle ( @handles ) {
         );
     ");
 
-    foreach my $sql ( generate( %opts ) ) {
+    foreach my $sql ( generate_sql_tree( %opts ) ) {
         eval { $dbh->do( $sql ) };
         if ( $@ ) {
             diag $sql;
@@ -296,7 +296,7 @@ foreach my $handle ( @handles ) {
         );
     ");
 
-    foreach my $sql ( generate( %opts ) ) {
+    foreach my $sql ( generate_sql_tree( %opts ) ) {
         eval { $dbh->do( $sql ) };
         if ( $@ ) {
             diag $sql;
