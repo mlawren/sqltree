@@ -76,8 +76,8 @@ foreach my $handle ( @handles ) {
         drop   => 1,
         table  => $table,
         pk     => 'id',
+        pktype => 'INTEGER',
         parent => 'parent',
-        type   => 'INTEGER',
     );
     
     if ( $handle->dbd eq 'SQLite' ) {
@@ -92,8 +92,8 @@ foreach my $handle ( @handles ) {
 
     $dbh->do("
         CREATE TABLE $table(
-            $opts{pk} $opts{type} primary key,
-            $opts{parent} $opts{type} references $table($opts{pk}),
+            $opts{pk} $opts{pktype} primary key,
+            $opts{parent} $opts{pktype} references $table($opts{pk}),
             codename text
         );
     ");
@@ -289,8 +289,8 @@ foreach my $handle ( @handles ) {
 
     $dbh->do("
         CREATE TABLE $table(
-            $opts{pk} $opts{type} primary key,
-            $opts{parent} $opts{type} references $table($opts{pk}),
+            $opts{pk} $opts{pktype} primary key,
+            $opts{parent} $opts{pktype} references $table($opts{pk}),
             codename text,
             path text
         );
