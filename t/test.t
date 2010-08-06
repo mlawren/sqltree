@@ -11,7 +11,7 @@ use Data::Dumper; $Data::Dumper::Indent = 0; $Data::Dumper::Maxdepth=2;
 my @handles = Test::Database->handles('SQLite', {driver => 'Pg'});
 #@handles = Test::Database->handles({driver => 'Pg'});
 #@handles = Test::Database->handles('SQLite');
-plan tests => 2 + 18 * @handles;
+plan tests => 2 + 20 * @handles;
 
 my $table = 'sqltree';
 my $home = getcwd;
@@ -378,6 +378,18 @@ foreach my $handle ( @handles ) {
         [4,'d','a/e/b/d',3],
         [3,'c','c',0]
     ], 'select indented/hierarchical comments');
+
+    throws_ok {
+        $dbh->do("DELETE FROM $table WHERE id = ?;",undef,5);
+    } qr/constraint/;
+
+    $check_path->("DELETE FROM $table WHERE id = ?",[4],
+    [
+        [1,'a',undef,'a'],
+        [2,'b',5,    'a/e/b'],
+        [3,'c',undef,'c'],
+        [5,'e',1,    'a/e'],
+    ], 'delete end node');
 
 }
 
