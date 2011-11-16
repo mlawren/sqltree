@@ -1,23 +1,47 @@
-Author: Mark Lawrence <nomad@null.net>
-Date:   Wed Jul 28 19:32:09 2010 +0200
+0.04 (2011-11-17)
 
-    Initial Commit.
-    
-    Released to CPAN as v0.01.
+    API Changes:
+        - N/A
 
+    New Features:
+        - N/A
 
-Author: Mark Lawrence <nomad@null.net>
-Date:   Thu Jul 29 00:06:33 CEST 2010
+    Enhancements:
+        - Perltidy and Podtidy all files with new .perltidyrc.
 
-    Released to CPAN as v0.02.
-    Compatible with Getop::Long::Descriptive 0.074.
+    Bug Fixes:
+        - Correctly re-parent path columns on update.
+        - Correctly update path columns on 'path_from' update.
 
-Author: Mark Lawrence <nomad@null.net>
-Date:   Tue Aug 3 18:16:33 2010 +0200
+0.03 (2010-08-03)
 
-    API Changes!
+    API Changes:
         - Function 'generate' renamed to 'generate_sql_tree'.
         - Option 'type' becomes 'pktype'.
-    Documentation & code cleanups.
-    bugfix: $table_tree.depth should always be type INT.
-    Released to CPAN as v0.03.
+
+    New Features:
+        - N/A
+
+    Enhancements:
+        - Documentation & code cleanups.
+
+    Bug Fixes:
+        - $table_tree.depth should always be type INT.
+
+0.02 (2010-07-29)
+
+    API Changes:
+        - N/A
+
+    New Features:
+        - N/A
+
+    Enhancements:
+        - Compatible with Getop::Long::Descriptive 0.074.
+
+    Bug Fixes:
+        - N/A
+
+0.01 (2010-07-28)
+
+    Initial Release
