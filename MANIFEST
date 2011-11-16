@@ -14,6 +14,8 @@ Makefile.PL
 MANIFEST
 MANIFEST.SKIP
 META.yml
+MYMETA.json
+MYMETA.yml
 README
 t/test.t
 xt/01_pod.t
