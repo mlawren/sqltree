@@ -14,7 +14,7 @@ my @handles = Test::Database->handles( 'SQLite', { driver => 'Pg' } );
 
 #@handles = Test::Database->handles({driver => 'Pg'});
 #@handles = Test::Database->handles('SQLite');
-plan tests => 2 + 20 * @handles;
+#plan tests => 2 + 24 * @handles;
 
 my $table = 'sqltree';
 my $home  = getcwd;
@@ -435,7 +435,57 @@ foreach my $handle (@handles) {
         'delete end node'
     );
 
+    $check_path->(
+        "UPDATE $table SET codename=? WHERE id = ?",
+        [ 'x', 3 ],
+        [
+            [ 1, 'a', undef, 'a' ],
+            [ 2, 'b', 5,     'a/e/b' ],
+            [ 3, 'x', undef, 'x' ],
+            [ 5, 'e', 1,     'a/e' ],
+        ],
+        'path rename single'
+    );
+
+    $check_path->(
+        "UPDATE $table SET codename=? WHERE id = ?",
+        [ 'y', 1 ],
+        [
+            [ 1, 'y', undef, 'y' ],
+            [ 2, 'b', 5,     'y/e/b' ],
+            [ 3, 'x', undef, 'x' ],
+            [ 5, 'e', 1,     'y/e' ],
+        ],
+        'path rename top'
+    );
+
+    $check_path->(
+        "UPDATE $table SET codename=? WHERE id = ?",
+        [ 'z', 5 ],
+        [
+            [ 1, 'y', undef, 'y' ],
+            [ 2, 'b', 5,     'y/z/b' ],
+            [ 3, 'x', undef, 'x' ],
+            [ 5, 'z', 1,     'y/z' ],
+        ],
+        'path rename middle'
+    );
+
+    $check_path->(
+        "UPDATE $table SET codename=? WHERE id = ?",
+        [ 't', 2 ],
+        [
+            [ 1, 'y', undef, 'y' ],
+            [ 2, 't', 5,     'y/z/t' ],
+            [ 3, 'x', undef, 'x' ],
+            [ 5, 'z', 1,     'y/z' ],
+        ],
+        'path rename end'
+    );
+
 }
+
+done_testing();
 
 # Force File::Temp to cleanup _after_ we have got out of its directory.
 END {

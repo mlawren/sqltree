@@ -219,7 +219,55 @@ FOR EACH ROW WHEN
 BEGIN
     SELECT RAISE (IGNORE);
 END;
+]
+    );
 
+    $path && push(
+        @SQL, split /\n\n+/, qq[
+-- If the from_path column has changed then update the path
+CREATE TRIGGER au_${table}_tree_x2 AFTER UPDATE ON $table
+FOR EACH ROW WHEN OLD.$path_from != NEW.$path_from
+BEGIN
+    UPDATE $table
+    SET
+        $path = (SELECT $path FROM $table WHERE $pk = OLD.$pk) ||
+            SUBSTR($path, LENGTH(OLD.$path)+1)
+    WHERE
+        $pk IN (
+            SELECT child
+            FROM $tree_table
+            WHERE parent = OLD.$pk AND depth > 0
+        )
+    ;
+END;
+]
+    );
+
+    $path && push(
+        @SQL, split /\n\n+/, qq[
+-- If the from_path column has changed then update the path
+CREATE TRIGGER au_${table}_tree_x AFTER UPDATE ON $table
+FOR EACH ROW WHEN OLD.$path_from != NEW.$path_from
+BEGIN
+    UPDATE $table
+    SET $path = 
+        CASE WHEN
+            NEW.$parent IS NOT NULL
+        THEN
+            (SELECT $path FROM $table WHERE $pk = NEW.$parent) || '/' ||
+            $path_from
+        ELSE
+            $path_from
+        END
+    WHERE
+        $pk = OLD.$pk
+    ;
+END;
+]
+    );
+
+    push(
+        @SQL, split /\n\n+/, qq[
 -- As for moving data around in $table freely, we should forbid
 -- moves that would create loops:
 CREATE TRIGGER bu_${table}_tree_2 BEFORE UPDATE ON $table
