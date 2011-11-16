@@ -41,7 +41,7 @@ foreach my $handle (@handles) {
             die $@;
         }
         my $result = $dbh->selectall_arrayref(
-            "select child,parent,depth from ${table}_tree order by
+            "select child+0,parent+0,depth+0 from ${table}_tree order by
             depth,child,parent"
         );
 
@@ -287,7 +287,7 @@ foreach my $handle (@handles) {
             die $@;
         }
         my $result = $dbh->selectall_arrayref(
-            "SELECT id,codename,parent,path
+            "SELECT id+0,codename,parent+0,path
                 FROM $table
                 ORDER BY id
             "
@@ -342,7 +342,7 @@ foreach my $handle (@handles) {
     }
 
     $check->( "
-        SELECT id,codename,parent,path
+        SELECT id+0,codename,parent+0,path
         FROM $table
         ORDER BY id
     ",
