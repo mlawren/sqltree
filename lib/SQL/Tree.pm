@@ -13,16 +13,16 @@ sub generate_sql_tree {
     my $dbtype = delete $opts{dbtype};
 
     if ( $dbtype =~ m/SQLite/ ) {
-        return generate_SQLite(%opts);
+        return _generate_SQLite(%opts);
     }
     elsif ( $dbtype =~ m/Pg/ ) {
-        return generate_Pg(%opts);
+        return _generate_Pg(%opts);
     }
 
     confess 'dbtype must be SQLite or Pg';
 }
 
-sub generate_SQLite {
+sub _generate_SQLite {
     my %opts = ( @_, );
 
     my $table  = $opts{table}  || confess 'usage: generate needs table';
@@ -293,7 +293,7 @@ END;
     return @SQL;
 }
 
-sub generate_Pg {
+sub _generate_Pg {
     my %opts = ( @_, );
 
     my $table  = $opts{table}  || confess 'usage: generate needs table';
