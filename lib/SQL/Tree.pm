@@ -4,14 +4,11 @@ use warnings;
 use base qw/Exporter/;
 use Carp qw/confess/;
 
-our $VERSION = '0.03';
+our $VERSION   = '0.03';
 our @EXPORT_OK = qw/generate_sql_tree/;
 
-
 sub generate_sql_tree {
-    my %opts = (
-        @_,
-    );
+    my %opts = ( @_, );
 
     my $dbtype = delete $opts{dbtype};
 
@@ -25,28 +22,26 @@ sub generate_sql_tree {
     confess 'dbtype must be SQLite or Pg';
 }
 
-
 sub generate_SQLite {
-    my %opts = (
-        @_,
-    );
+    my %opts = ( @_, );
 
     my $table  = $opts{table}  || confess 'usage: generate needs table';
     my $pk     = $opts{pk}     || confess 'usage: generate needs pk';
     my $pktype = $opts{pktype} || confess 'usage: generate needs pktype';
     my $parent = $opts{parent} || confess 'usage: generate needs parent';
-    my $path       = $opts{path};
-    my $path_from  = $opts{path_from};
+    my $path   = $opts{path};
+    my $path_from = $opts{path_from};
 
-    if ($path and !$path_from) {
+    if ( $path and !$path_from ) {
         confess 'usage: generate needs both path and path_from';
     }
 
-    my $tree_table = $table.'_tree';
+    my $tree_table = $table . '_tree';
 
     my @SQL;
 
-    $opts{drop} && push(@SQL, split /\n\n+/, qq[
+    $opts{drop} && push(
+        @SQL, split /\n\n+/, qq[
 DROP TABLE IF EXISTS $tree_table;
 
 DROP TRIGGER IF EXISTS ${tree_table}_insert_trigger_1;
@@ -60,9 +55,11 @@ DROP TRIGGER IF EXISTS ${tree_table}_update_trigger_3;
 DROP TRIGGER IF EXISTS ${tree_table}_update_trigger_4;
 
 DROP TRIGGER IF EXISTS ${tree_table}_update_trigger_r5;
-]);
+]
+    );
 
-    push(@SQL, split /\n\n+/, qq[
+    push(
+        @SQL, split /\n\n+/, qq[
 CREATE TABLE $tree_table (
     treeid    INTEGER PRIMARY KEY,
     parent    $pktype NOT NULL REFERENCES $table($pk) ON DELETE CASCADE,
@@ -80,9 +77,11 @@ CREATE TABLE $tree_table (
 -- the child id in these rows to be the id of currently inserted row,
 -- and increase depth by one.
 -- --------------------------------------------------------------------
-]);
+]
+    );
 
-    $path && push(@SQL, split /\n\n+/, qq[
+    $path && push(
+        @SQL, split /\n\n+/, qq[
 CREATE TRIGGER ai_${table}_path_2 AFTER INSERT ON $table
 FOR EACH ROW WHEN NEW.$parent IS NULL
 BEGIN
@@ -102,9 +101,11 @@ BEGIN
     )
     WHERE $pk = NEW.$pk;
 END;
-]);
+]
+    );
 
-    push(@SQL, split /\n\n+/, qq[
+    push(
+        @SQL, split /\n\n+/, qq[
 CREATE TRIGGER ai_${table}_tree_1 AFTER INSERT ON $table
 FOR EACH ROW 
 BEGIN
@@ -121,9 +122,11 @@ END;
 -- Triggers in SQLite are apparently executed LIFO, so you need to read
 -- these trigger statements from the bottom up.
 -- --------------------------------------------------------------------
-]);
+]
+    );
 
-    $path && push(@SQL, split /\n\n+/, qq[
+    $path && push(
+        @SQL, split /\n\n+/, qq[
 -- Paths - update all affected rows with the new parent path
 CREATE TRIGGER au_${table}_path_2 AFTER UPDATE ON $table
 FOR EACH ROW WHEN NEW.$parent IS NOT NULL
@@ -140,10 +143,11 @@ BEGIN
         WHERE parent = NEW.$parent AND depth > 0
     );
 END;
-]);
+]
+    );
 
-
-    push(@SQL, split /\n\n+/, qq[
+    push(
+        @SQL, split /\n\n+/, qq[
 -- Finally, insert tree data relating to the new parent
 CREATE TRIGGER au_${table}_tree_5 AFTER UPDATE ON $table
 FOR EACH ROW WHEN NEW.$parent IS NOT NULL
@@ -178,17 +182,19 @@ BEGIN
 END;
 -- FIXME: Also trigger when column 'path_from' changes. For the
 -- moment, the user work-around is to temporarily re-parent the row.
-]);
+]
+    );
 
-    $path && push(@SQL, split /\n\n+/, qq[
+    $path && push(
+        @SQL, split /\n\n+/, qq[
 -- path changes - Remove the leading paths of the old parent. This has
 -- to happen before we make changes to $tree_table.
 CREATE TRIGGER au_${table}_path_1 AFTER UPDATE ON $table
 FOR EACH ROW WHEN OLD.$parent IS NOT NULL
 BEGIN
     UPDATE $table
-    SET $path = ltrim($path, (
-        SELECT $path || '/'
+    SET $path = substr($path, (
+        SELECT length($path || '/') + 1
         FROM $table
         WHERE $pk = OLD.$parent
     ))
@@ -198,9 +204,11 @@ BEGIN
         WHERE parent = OLD.$parent AND depth > 0
     );
 END;
-]);
+]
+    );
 
-    push(@SQL, split /\n\n+/, qq[
+    push(
+        @SQL, split /\n\n+/, qq[
 -- If there was no change to the parent then we can skip the rest of
 -- the triggers
 CREATE TRIGGER au_${table}_tree_2 AFTER UPDATE ON $table
@@ -231,34 +239,32 @@ FOR EACH ROW WHEN OLD.$pk != NEW.$pk
 BEGIN
     SELECT RAISE (ABORT, 'Changing ids is forbidden.');
 END;
-]);
+]
+    );
 
     return @SQL;
 }
 
-
-
 sub generate_Pg {
-    my %opts = (
-        @_,
-    );
+    my %opts = ( @_, );
 
     my $table  = $opts{table}  || confess 'usage: generate needs table';
     my $pk     = $opts{pk}     || confess 'usage: generate needs pk';
     my $pktype = $opts{pktype} || confess 'usage: generate needs pktype';
     my $parent = $opts{parent} || confess 'usage: generate needs parent';
-    my $path      = $opts{path};
+    my $path   = $opts{path};
     my $path_from = $opts{path_from};
 
-    if ($path and !$path_from) {
+    if ( $path and !$path_from ) {
         confess 'usage: generate needs both path and path_from';
     }
 
-    my $tree_table = $table.'_tree';
+    my $tree_table = $table . '_tree';
 
     my @SQL;
 
-    $opts{drop} && push(@SQL, split /\n\n+/, qq[
+    $opts{drop} && push(
+        @SQL, split /\n\n+/, qq[
 DROP TABLE IF EXISTS $tree_table;
 
 DROP TRIGGER IF EXISTS ${tree_table}_insert_trigger_1 ON $table;
@@ -268,9 +274,11 @@ DROP TRIGGER IF EXISTS ${tree_table}_before_update_trigger_1 ON $table;
 DROP TRIGGER IF EXISTS ${tree_table}_after_update_trigger_1 ON $table;
 
 DROP TRIGGER IF EXISTS ${tree_table}_path_before_update_trigger ON $table;
-]);
+]
+    );
 
-    push(@SQL, split /\n\n+/, qq[
+    push(
+        @SQL, split /\n\n+/, qq[
 CREATE OR REPLACE FUNCTION make_plpgsql()
 RETURNS VOID
 LANGUAGE SQL
@@ -390,10 +398,11 @@ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER au_${table}_tree_1 AFTER UPDATE ON $table
 FOR EACH ROW EXECUTE PROCEDURE au_${table}_tree_1();
-]);
+]
+    );
 
-
-    $path && push(@SQL, split /\n\n+/, qq[
+    $path && push(
+        @SQL, split /\n\n+/, qq[
 -- Generate path urls based on $path_from and position in
 -- the tree. 
 CREATE OR REPLACE FUNCTION bi_${table}_path_1()
@@ -451,7 +460,8 @@ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER bu_${table}_path_1 BEFORE UPDATE ON $table
 FOR EACH ROW EXECUTE PROCEDURE bu_${table}_path_1();
-]);
+]
+    );
 
     return @SQL;
 
@@ -797,9 +807,9 @@ Mark Lawrence E<lt>nomad@null.netE<gt>
 
 Copyright 2010 Mark Lawrence <nomad@null.net>
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.
 
 =cut
