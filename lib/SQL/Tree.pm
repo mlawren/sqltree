@@ -82,7 +82,8 @@ CREATE TABLE $tree_table (
 
     $path && push(
         @SQL, split /\n\n+/, qq[
-CREATE TRIGGER ai_${table}_path_2 AFTER INSERT ON $table
+CREATE TRIGGER ai_${table}_path_2
+AFTER INSERT ON $table
 FOR EACH ROW WHEN NEW.$parent IS NULL
 BEGIN
     UPDATE $table
@@ -90,7 +91,8 @@ BEGIN
     WHERE $pk = NEW.$pk;
 END;
 
-CREATE TRIGGER ai_${table}_path_1 AFTER INSERT ON $table
+CREATE TRIGGER ai_${table}_path_1
+AFTER INSERT ON $table
 FOR EACH ROW WHEN NEW.$parent IS NOT NULL
 BEGIN
     UPDATE $table
@@ -106,7 +108,8 @@ END;
 
     push(
         @SQL, split /\n\n+/, qq[
-CREATE TRIGGER ai_${table}_tree_1 AFTER INSERT ON $table
+CREATE TRIGGER ai_${table}_tree_1
+AFTER INSERT ON $table
 FOR EACH ROW 
 BEGIN
     INSERT INTO $tree_table (parent, child, depth)
@@ -128,7 +131,8 @@ END;
     $path && push(
         @SQL, split /\n\n+/, qq[
 -- Paths - update all affected rows with the new parent path
-CREATE TRIGGER au_${table}_path_2 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_path_2
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN NEW.$parent IS NOT NULL
 BEGIN
     UPDATE $table
@@ -149,7 +153,8 @@ END;
     push(
         @SQL, split /\n\n+/, qq[
 -- Finally, insert tree data relating to the new parent
-CREATE TRIGGER au_${table}_tree_5 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_tree_5
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN NEW.$parent IS NOT NULL
 BEGIN
     INSERT INTO $tree_table (parent, child, depth)
@@ -166,7 +171,8 @@ BEGIN
 END;
 
 -- Remove the tree data relating to the old parent
-CREATE TRIGGER au_${table}_tree_4 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_tree_4
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN OLD.$parent IS NOT NULL
 BEGIN
     DELETE FROM $tree_table WHERE treeid in (
@@ -189,7 +195,8 @@ END;
         @SQL, split /\n\n+/, qq[
 -- path changes - Remove the leading paths of the old parent. This has
 -- to happen before we make changes to $tree_table.
-CREATE TRIGGER au_${table}_path_1 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_path_1
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN OLD.$parent IS NOT NULL
 BEGIN
     UPDATE $table
@@ -211,7 +218,8 @@ END;
         @SQL, split /\n\n+/, qq[
 -- If there was no change to the parent then we can skip the rest of
 -- the triggers
-CREATE TRIGGER au_${table}_tree_2 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_tree_2
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN
     (OLD.$parent IS NULL AND NEW.$parent IS NULL) OR
     ((OLD.$parent IS NOT NULL and NEW.$parent IS NOT NULL) AND
@@ -225,7 +233,8 @@ END;
     $path && push(
         @SQL, split /\n\n+/, qq[
 -- If the from_path column has changed then update the path
-CREATE TRIGGER au_${table}_tree_x2 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_tree_x2
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN OLD.$path_from != NEW.$path_from
 BEGIN
     UPDATE $table
@@ -246,7 +255,8 @@ END;
     $path && push(
         @SQL, split /\n\n+/, qq[
 -- If the from_path column has changed then update the path
-CREATE TRIGGER au_${table}_tree_x AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_tree_x
+AFTER UPDATE ON $table
 FOR EACH ROW WHEN OLD.$path_from != NEW.$path_from
 BEGIN
     UPDATE $table
@@ -270,7 +280,8 @@ END;
         @SQL, split /\n\n+/, qq[
 -- As for moving data around in $table freely, we should forbid
 -- moves that would create loops:
-CREATE TRIGGER bu_${table}_tree_2 BEFORE UPDATE ON $table
+CREATE TRIGGER bu_${table}_tree_2
+BEFORE UPDATE ON $table
 FOR EACH ROW WHEN NEW.$parent IS NOT NULL AND
     (SELECT
         COUNT(child)
@@ -282,7 +293,8 @@ BEGIN
 END;
 
 -- This implementation forbids changes to the primary key
-CREATE TRIGGER bu_${table}_tree_1 BEFORE UPDATE ON $table
+CREATE TRIGGER bu_${table}_tree_1
+BEFORE UPDATE ON $table
 FOR EACH ROW WHEN OLD.$pk != NEW.$pk
 BEGIN
     SELECT RAISE (ABORT, 'Changing ids is forbidden.');
@@ -365,7 +377,8 @@ CREATE TABLE $tree_table (
 -- the child id in these rows to be the id of currently inserted row,
 -- and increase depth by one.
 -- --------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ai_${table}_tree_1() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION ai_${table}_tree_1()
+RETURNS TRIGGER AS
 \$BODY\$
 DECLARE
 BEGIN
@@ -380,7 +393,8 @@ END;
 \$BODY\$
 LANGUAGE 'plpgsql';
 
-CREATE TRIGGER ai_${table}_tree_1 AFTER INSERT ON $table
+CREATE TRIGGER ai_${table}_tree_1
+AFTER INSERT ON $table
 FOR EACH ROW EXECUTE PROCEDURE ai_${table}_tree_1();
 
 -- --------------------------------------------------------------------
@@ -388,7 +402,8 @@ FOR EACH ROW EXECUTE PROCEDURE ai_${table}_tree_1();
 -- --------------------------------------------------------------------
 -- As for moving data around in $table freely, we should forbid
 -- moves that would create loops:
-CREATE OR REPLACE FUNCTION bu_${table}_tree_1() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION bu_${table}_tree_1()
+RETURNS TRIGGER AS
 \$BODY\$
 DECLARE
 BEGIN
@@ -411,10 +426,12 @@ END;
 \$BODY\$
 LANGUAGE 'plpgsql';
 
-CREATE TRIGGER bu_${table}_tree_1 BEFORE UPDATE ON $table
+CREATE TRIGGER bu_${table}_tree_1
+BEFORE UPDATE ON $table
 FOR EACH ROW EXECUTE PROCEDURE bu_${table}_tree_1();
 
-CREATE OR REPLACE FUNCTION au_${table}_tree_1() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION au_${table}_tree_1()
+RETURNS TRIGGER AS
 \$BODY\$
 DECLARE
 BEGIN
@@ -444,7 +461,8 @@ END;
 \$BODY\$
 LANGUAGE 'plpgsql';
 
-CREATE TRIGGER au_${table}_tree_1 AFTER UPDATE ON $table
+CREATE TRIGGER au_${table}_tree_1
+AFTER UPDATE ON $table
 FOR EACH ROW EXECUTE PROCEDURE au_${table}_tree_1();
 ]
     );
@@ -470,7 +488,8 @@ END;
 \$BODY\$
 LANGUAGE 'plpgsql';
 
-CREATE TRIGGER bi_${table}_path_1 BEFORE INSERT ON $table
+CREATE TRIGGER bi_${table}_path_1
+BEFORE INSERT ON $table
 FOR EACH ROW EXECUTE PROCEDURE bi_${table}_path_1();
 
 CREATE OR REPLACE FUNCTION bu_${table}_path_1()
@@ -506,7 +525,8 @@ END;
 \$BODY\$
 LANGUAGE 'plpgsql';
 
-CREATE TRIGGER bu_${table}_path_1 BEFORE UPDATE ON $table
+CREATE TRIGGER bu_${table}_path_1
+BEFORE UPDATE ON $table
 FOR EACH ROW EXECUTE PROCEDURE bu_${table}_path_1();
 ]
     );
@@ -558,7 +578,8 @@ ORDER BY
 
 ALTER TABLE $table add column tree_path TEXT;
 
-CREATE OR REPLACE FUNCTION tree_path_${table}_bi() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION tree_path_${table}_bi()
+RETURNS TRIGGER AS
 $BODY$
 DECLARE
 BEGIN
@@ -571,9 +592,12 @@ BEGIN
 END;
 $BODY$
 LANGUAGE 'plpgsql';
-CREATE TRIGGER tree_path_${table}_bi BEFORE INSERT ON $table FOR EACH ROW EXECUTE PROCEDURE tree_path_${table}_bi();
+CREATE TRIGGER tree_path_${table}_bi
+BEFORE INSERT ON $table
+FOR EACH ROW EXECUTE PROCEDURE tree_path_${table}_bi();
 
-CREATE OR REPLACE FUNCTION tree_path_${table}_bu() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION tree_path_${table}_bu()
+RETURNS TRIGGER AS
 $BODY$
 DECLARE
     replace_from TEXT := '^';
@@ -596,7 +620,9 @@ BEGIN
 END;
 $BODY$
 LANGUAGE 'plpgsql';
-CREATE TRIGGER tree_path_${table}_bu BEFORE UPDATE ON $table FOR EACH ROW EXECUTE PROCEDURE tree_path_${table}_bu();
+CREATE TRIGGER tree_path_${table}_bu
+BEFORE UPDATE ON $table
+FOR EACH ROW EXECUTE PROCEDURE tree_path_${table}_bu();
 
 
 DELETE FROM $table;
@@ -670,7 +696,8 @@ To allow sorting of whole tree (or just some branch) we need to add new column, 
 
 ALTER TABLE $table add column ordering_path TEXT UNIQUE;
 -- This field will be filled by these triggers:
-CREATE OR REPLACE FUNCTION tree_ordering_path_${table}_bi() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION tree_ordering_path_${table}_bi()
+RETURNS TRIGGER AS
 $BODY$
 DECLARE
 BEGIN
@@ -684,9 +711,12 @@ BEGIN
 END;
 $BODY$
 LANGUAGE 'plpgsql';
-CREATE TRIGGER tree_ordering_path_${table}_bi BEFORE INSERT ON $table FOR EACH ROW EXECUTE PROCEDURE tree_ordering_path_${table}_bi();
+CREATE TRIGGER tree_ordering_path_${table}_bi
+BEFORE INSERT ON $table
+FOR EACH ROW EXECUTE PROCEDURE tree_ordering_path_${table}_bi();
 
-CREATE OR REPLACE FUNCTION tree_ordering_path_${table}_bu() RETURNS TRIGGER AS
+CREATE OR REPLACE FUNCTION tree_ordering_path_${table}_bu()
+RETURNS TRIGGER AS
 $BODY$
 DECLARE
 BEGIN
@@ -706,7 +736,9 @@ BEGIN
 END;
 $BODY$
 LANGUAGE 'plpgsql';
-CREATE TRIGGER tree_ordering_path_${table}_bu BEFORE UPDATE ON $table FOR EACH ROW EXECUTE PROCEDURE tree_ordering_path_${table}_bu();
+CREATE TRIGGER tree_ordering_path_${table}_bu
+BEFORE UPDATE ON $table
+FOR EACH ROW EXECUTE PROCEDURE tree_ordering_path_${table}_bu();
 
 DELETE FROM $table;
 INSERT INTO $table (id, codename, parent, ordering) VALUES
