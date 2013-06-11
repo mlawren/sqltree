@@ -8,12 +8,12 @@ CREATE TABLE [% tree %] (
     FOREIGN KEY(child) REFERENCES [% table %]([% pk %]) ON DELETE CASCADE
 );
 
-------------------------------SPLIT------------------------------
-
 /*
  Triggers in SQLite run in the reverse order to which they are defined.
  Actions happen from the bottom up.
  */
+
+------------------------------SPLIT------------------------------
 
 [%- IF path -%]
 
@@ -24,6 +24,7 @@ AFTER INSERT ON
 FOR EACH ROW WHEN
     NEW.[% parent %] IS NOT NULL
 BEGIN
+
     UPDATE
         [% table %]
     SET
@@ -58,6 +59,7 @@ BEGIN
     WHERE
         [% pk %] = NEW.[% pk %]
     ;
+
 END;
 
 [%- END -%]
@@ -110,13 +112,16 @@ BEGIN
     WHERE
         x.child = NEW.[% parent %]
     ;
+
 END;
 
 [%- IF path -%]
 
 ------------------------------SPLIT------------------------------
 
--- Paths - update all affected rows with the new parent path
+/*
+ Paths - update all affected rows with the new parent path
+*/
 
 CREATE TRIGGER
     au_[% table %]_path_2
@@ -125,6 +130,7 @@ AFTER UPDATE ON
 FOR EACH ROW WHEN
     NEW.[% parent %] IS NOT NULL
 BEGIN
+
     UPDATE
         [% table %]
     SET
@@ -145,19 +151,29 @@ BEGIN
             WHERE parent = NEW.[% parent %] AND depth > 0
         )
     ;
+
 END;
+
 [%- END -%]
 
 ------------------------------SPLIT------------------------------
 
--- Finally, insert tree data relating to the new parent
+/*
+ Finally, insert tree data relating to the new parent
+*/
 
-CREATE TRIGGER au_[% table %]_tree_5
-AFTER UPDATE ON [% table %]
-FOR EACH ROW WHEN NEW.[% parent %] IS NOT NULL
+CREATE TRIGGER
+    au_[% table %]_tree_5
+AFTER UPDATE ON
+    [% table %]
+FOR EACH ROW WHEN
+    NEW.[% parent %] IS NOT NULL
 BEGIN
-    INSERT INTO [% tree %] (parent, child, depth)
-    SELECT r1.parent, r2.child, r1.depth + r2.depth + 1
+
+    INSERT INTO
+        [% tree %] (parent, child, depth)
+    SELECT
+        r1.parent, r2.child, r1.depth + r2.depth + 1
     FROM
         [% tree %] r1
     INNER JOIN
@@ -167,63 +183,98 @@ BEGIN
     WHERE
         r1.child = NEW.[% parent %]
     ;
+
 END;
 
 ------------------------------SPLIT------------------------------
 
--- Remove the tree data relating to the old parent
+/*
+ Remove the tree data relating to the old parent
+*/
 
-CREATE TRIGGER au_[% table %]_tree_4
-AFTER UPDATE ON [% table %]
-FOR EACH ROW WHEN OLD.[% parent %] IS NOT NULL
+CREATE TRIGGER
+    au_[% table %]_tree_4
+AFTER UPDATE ON
+    [% table %]
+FOR EACH ROW WHEN
+    OLD.[% parent %] IS NOT NULL
 BEGIN
-    DELETE FROM [% tree %] WHERE treeid in (
-        SELECT r2.treeid
-        FROM
-            [% tree %] r1
-        INNER JOIN
-            [% tree %] r2
-        ON
-            r1.child = r2.child AND r2.depth > r1.depth
-        WHERE r1.parent = NEW.[% pk %]
-    );
+    DELETE FROM
+        [% tree %]
+    WHERE
+        treeid IN (
+            SELECT
+                r2.treeid
+            FROM
+                [% tree %] r1
+            INNER JOIN
+                [% tree %] r2
+            ON
+                r1.child = r2.child AND r2.depth > r1.depth
+            WHERE
+                r1.parent = NEW.[% pk %]
+        )
+    ;
 END;
--- FIXME: Also trigger when column 'path_from' changes. For the
--- moment, the user work-around is to temporarily re-parent the row.
+
+/*
+ FIXME: Also trigger when column 'path_from' changes. For the moment,
+ the user work-around is to temporarily re-parent the row.
+*/
 
 
 [%- IF path -%]
 
 ------------------------------SPLIT------------------------------
 
--- path changes - Remove the leading paths of the old parent. This has
--- to happen before we make changes to [% tree %].
+/*
+ Path changes - Remove the leading paths of the old parent. This has to
+ happen before we make changes to [% tree %].
+*/
 
-CREATE TRIGGER au_[% table %]_path_1
-AFTER UPDATE ON [% table %]
-FOR EACH ROW WHEN OLD.[% parent %] IS NOT NULL
+CREATE TRIGGER
+    au_[% table %]_path_1
+AFTER UPDATE ON
+    [% table %]
+FOR EACH ROW WHEN
+    OLD.[% parent %] IS NOT NULL
 BEGIN
-    UPDATE [% table %]
-    SET [% path %] = substr([% path %], (
-        SELECT length([% path %] || '/') + 1
-        FROM [% table %]
-        WHERE [% pk %] = OLD.[% parent %]
-    ))
-    WHERE [% pk %] IN (
-        SELECT child
-        FROM [% tree %]
-        WHERE parent = OLD.[% parent %] AND depth > 0
-    );
+    UPDATE
+        [% table %]
+    SET
+        [% path %] = substr([% path %], (
+            SELECT
+                length([% path %] || '/') + 1
+            FROM
+                [% table %]
+            WHERE
+                [% pk %] = OLD.[% parent %]
+        ))
+    WHERE
+        [% pk %] IN (
+            SELECT
+                child
+            FROM
+                [% tree %]
+            WHERE
+                parent = OLD.[% parent %] AND depth > 0
+        )
+    ;
+
 END;
 [%- END -%]
 
 ------------------------------SPLIT------------------------------
 
--- If there was no change to the parent then we can skip the rest of
--- the triggers
+/*
+ If there was no change to the parent then we can skip the rest of the
+ triggers
+*/
 
-CREATE TRIGGER au_[% table %]_tree_2
-AFTER UPDATE ON [% table %]
+CREATE TRIGGER
+    au_[% table %]_tree_2
+AFTER UPDATE ON
+    [% table %]
 FOR EACH ROW WHEN
     (OLD.[% parent %] IS NULL AND NEW.[% parent %] IS NULL) OR
     ((OLD.[% parent %] IS NOT NULL and NEW.[% parent %] IS NOT NULL) AND
@@ -236,21 +287,36 @@ END;
 
 ------------------------------SPLIT------------------------------
 
--- If the from_path column has changed then update the path
+/*
+ If the from_path column has changed then update the path
+*/
 
-CREATE TRIGGER au_[% table %]_tree_x2
-AFTER UPDATE ON [% table %]
-FOR EACH ROW WHEN OLD.[% path_from %] != NEW.[% path_from %]
+CREATE TRIGGER
+    au_[% table %]_tree_x2
+AFTER UPDATE ON
+    [% table %]
+FOR EACH ROW WHEN
+    OLD.[% path_from %] != NEW.[% path_from %]
 BEGIN
-    UPDATE [% table %]
+    UPDATE
+        [% table %]
     SET
-        [% path %] = (SELECT [% path %] FROM [% table %] WHERE [% pk %] = OLD.[% pk %]) ||
-            SUBSTR([% path %], LENGTH(OLD.[% path %])+1)
+        [% path %] = (
+            SELECT
+                [% path %]
+            FROM
+                [% table %]
+            WHERE
+                [% pk %] = OLD.[% pk %]
+        ) || SUBSTR([% path %], LENGTH(OLD.[% path %]) + 1)
     WHERE
         [% pk %] IN (
-            SELECT child
-            FROM [% tree %]
-            WHERE parent = OLD.[% pk %] AND depth > 0
+            SELECT
+                child
+            FROM
+                [% tree %]
+            WHERE
+                parent = OLD.[% pk %] AND depth > 0
         )
     ;
 END;
@@ -295,8 +361,7 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- As for moving data around in [% table %] freely, we should forbid
- moves that would create loops:
+ Forbid moves that would create loops:
 */
 
 CREATE TRIGGER
@@ -320,7 +385,7 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- This implementation forbids changes to the primary key
+ This implementation doesn't support to the primary key
 */
 
 CREATE TRIGGER
