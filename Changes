@@ -1,3 +1,17 @@
+0.40.1_1 (2013-06-11)
+
+    API Changes:
+        - None
+
+    New Features:
+        - None
+
+    Enhancements:
+        - Convert to http://semver.org versioning
+
+    Bug Fixes:
+        - None
+
 0.04 (2011-11-17)
 
     API Changes:

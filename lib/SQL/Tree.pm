@@ -4,7 +4,7 @@ use warnings;
 use base qw/Exporter/;
 use Carp qw/confess/;
 
-our $VERSION   = '0.04';
+our $VERSION   = '0.40.1_1';
 our @EXPORT_OK = qw/generate_sql_tree/;
 
 sub generate_sql_tree {
