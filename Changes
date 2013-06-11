@@ -1,13 +1,14 @@
-0.40.1_1 (2013-06-11)
+0.0.5_1 (2013-06-11)
 
     API Changes:
-        - None
+        - Distribution renamed from SQL-Tree to App-sqltree.
 
     New Features:
         - None
 
     Enhancements:
         - Convert to http://semver.org versioning
+        - Refactored based on OptArgs and Template::Tiny.
 
     Bug Fixes:
         - None

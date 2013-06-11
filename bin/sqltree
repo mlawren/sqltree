@@ -16,6 +16,10 @@ sqltree - hierarchical data (tree) implementation in SQL
 
   sqltree [DRIVER] [TABLE] [PK] [PARENT] [TYPE]
 
+=head1 VERSION
+
+0.0.5_1 (2013-06-12)
+
 =head1 DESCRIPTION
 
 B<sqltree> generates the SQL for a herarchical data (tree)
