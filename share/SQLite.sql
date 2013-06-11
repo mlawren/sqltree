@@ -18,7 +18,7 @@ CREATE TABLE [% tree %] (
 [%- IF path -%]
 
 CREATE TRIGGER
-    ai_[% table %]_path_2
+    tree_ai_[% table %]_3
 AFTER INSERT ON
     [% table %]
 FOR EACH ROW WHEN
@@ -45,7 +45,7 @@ END;
 ------------------------------SPLIT------------------------------
 
 CREATE TRIGGER
-    ai_[% table %]_path_1
+    tree_ai_[% table %]_2
 AFTER INSERT ON
     [% table %]
 FOR EACH ROW WHEN
@@ -67,7 +67,7 @@ END;
 ------------------------------SPLIT------------------------------
 
 CREATE TRIGGER
-    ai_[% table %]_tree_1
+    tree_ai_[% table %]_1
 AFTER INSERT ON
     [% table %]
 FOR EACH ROW 
@@ -124,7 +124,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_path_2
+    tree_au_[% table %]_7
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -163,7 +163,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_tree_5
+    tree_au_[% table %]_6
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -193,7 +193,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_tree_4
+    tree_au_[% table %]_5
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -233,7 +233,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_path_1
+    tree_au_[% table %]_4
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -272,7 +272,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_tree_2
+    tree_au_[% table %]_3
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -292,7 +292,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_tree_x2
+    tree_au_[% table %]_2
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -328,7 +328,7 @@ END;
 */
 
 CREATE TRIGGER
-    au_[% table %]_tree_x
+    tree_au_[% table %]_1
 AFTER UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -365,7 +365,7 @@ END;
 */
 
 CREATE TRIGGER
-    bu_[% table %]_tree_2
+    tree_bu_[% table %]_2
 BEFORE UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
@@ -389,7 +389,7 @@ END;
 */
 
 CREATE TRIGGER
-    bu_[% table %]_tree_1
+    tree_bu_[% table %]_1
 BEFORE UPDATE ON
     [% table %]
 FOR EACH ROW WHEN
