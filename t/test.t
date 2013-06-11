@@ -29,6 +29,7 @@ foreach my $handle (@handles) {
       DBI->connect( $handle->connection_info,
         { RaiseError => 1, PrintError => 0, PrintWarn => 1 } );
 
+    $dbh->do("PRAGMA recursive_triggers = ON;") if $handle->dbd eq 'SQLite';
     my $check_tree = sub {
         my $sql    = shift;
         my $args   = shift;
@@ -41,7 +42,7 @@ foreach my $handle (@handles) {
             die $@;
         }
         my $result = $dbh->selectall_arrayref(
-            "select child+0,parent+0,depth+0 from ${table}_tree order by
+            "select child,parent,depth from ${table}_tree order by
             depth,child,parent"
         );
 
@@ -79,7 +80,7 @@ foreach my $handle (@handles) {
         drop   => 1,
         table  => $table,
         pk     => 'id',
-        pktype => 'VARCHAR',
+        pktype => 'INTEGER',
         parent => 'parent',
     );
 
@@ -287,7 +288,7 @@ foreach my $handle (@handles) {
             die $@;
         }
         my $result = $dbh->selectall_arrayref(
-            "SELECT id+0,codename,parent+0,path
+            "SELECT id,codename,parent,path
                 FROM $table
                 ORDER BY id
             "
@@ -342,7 +343,7 @@ foreach my $handle (@handles) {
     }
 
     $check->( "
-        SELECT id+0,codename,parent+0,path
+        SELECT id,codename,parent,path
         FROM $table
         ORDER BY id
     ",
