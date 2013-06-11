@@ -8,13 +8,15 @@ CREATE TABLE [% tree %] (
     FOREIGN KEY(child) REFERENCES [% table %]([% pk %]) ON DELETE CASCADE
 );
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 /*
  Triggers in SQLite run in the reverse order to which they are defined.
  Actions happen from the bottom up.
  */
 
 [%- IF path -%]
+
 CREATE TRIGGER
     ai_[% table %]_path_2
 AFTER INSERT ON
@@ -39,7 +41,8 @@ BEGIN
 
 END;
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 CREATE TRIGGER
     ai_[% table %]_path_1
 AFTER INSERT ON
@@ -59,7 +62,8 @@ END;
 
 [%- END -%]
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 CREATE TRIGGER
     ai_[% table %]_tree_1
 AFTER INSERT ON
@@ -109,8 +113,11 @@ BEGIN
 END;
 
 [%- IF path -%]
---SPLIT--
+
+------------------------------SPLIT------------------------------
+
 -- Paths - update all affected rows with the new parent path
+
 CREATE TRIGGER
     au_[% table %]_path_2
 AFTER UPDATE ON
@@ -141,9 +148,10 @@ BEGIN
 END;
 [%- END -%]
 
+------------------------------SPLIT------------------------------
 
---SPLIT--
 -- Finally, insert tree data relating to the new parent
+
 CREATE TRIGGER au_[% table %]_tree_5
 AFTER UPDATE ON [% table %]
 FOR EACH ROW WHEN NEW.[% parent %] IS NOT NULL
@@ -161,8 +169,10 @@ BEGIN
     ;
 END;
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 -- Remove the tree data relating to the old parent
+
 CREATE TRIGGER au_[% table %]_tree_4
 AFTER UPDATE ON [% table %]
 FOR EACH ROW WHEN OLD.[% parent %] IS NOT NULL
@@ -183,9 +193,12 @@ END;
 
 
 [%- IF path -%]
---SPLIT--
+
+------------------------------SPLIT------------------------------
+
 -- path changes - Remove the leading paths of the old parent. This has
 -- to happen before we make changes to [% tree %].
+
 CREATE TRIGGER au_[% table %]_path_1
 AFTER UPDATE ON [% table %]
 FOR EACH ROW WHEN OLD.[% parent %] IS NOT NULL
@@ -204,9 +217,11 @@ BEGIN
 END;
 [%- END -%]
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 -- If there was no change to the parent then we can skip the rest of
 -- the triggers
+
 CREATE TRIGGER au_[% table %]_tree_2
 AFTER UPDATE ON [% table %]
 FOR EACH ROW WHEN
@@ -218,8 +233,11 @@ BEGIN
 END;
 
 [%- IF path -%]
---SPLIT--
+
+------------------------------SPLIT------------------------------
+
 -- If the from_path column has changed then update the path
+
 CREATE TRIGGER au_[% table %]_tree_x2
 AFTER UPDATE ON [% table %]
 FOR EACH ROW WHEN OLD.[% path_from %] != NEW.[% path_from %]
@@ -237,7 +255,8 @@ BEGIN
     ;
 END;
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 /*
  If the from_path column has changed then update the path
 */
@@ -273,7 +292,8 @@ END;
 [%- END -%]
 
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 /*
  As for moving data around in [% table %] freely, we should forbid
  moves that would create loops:
@@ -297,7 +317,8 @@ BEGIN
         'Update blocked, because it would create loop in tree.');
 END;
 
---SPLIT--
+------------------------------SPLIT------------------------------
+
 /*
  This implementation forbids changes to the primary key
 */

@@ -88,10 +88,10 @@ sub run {
     $tt->process( \$src, $opts, \$sql );
 
     if ( $opts->{no_print} ) {
-        return split( /^--SPLIT--$/m, $sql );
+        return split( /[\n\s]*-+SPLIT-+[\n\s]*/m, $sql );
     }
     else {
-        $sql =~ s/^--SPLIT--$//mg;
+        $sql =~ s/[\n\s]*-+SPLIT-+[\n\s]*/\n\n/mg;
         print $sql;
     }
 }
