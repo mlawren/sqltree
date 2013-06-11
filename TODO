@@ -1,0 +1,13 @@
+* Do not RAISE(IGNORE) anywhere, which prevents other code from
+defining AFTER UPDATE triggers.
+
+A possible better way of chaining multiple triggers together on SQLite?
+
+BEGIN
+  select RAISE(ABORT, 'FK VIOLATION INSERT AlbumID ON AlbumSection')
+  where NEW.AlbumID IS NOT NULL and
+  NEW.AlbumID not in (select AlbumID from Album);
+
+  select RAISE(ABORT, 'Another problem')
+  where another_condition;
+END;
