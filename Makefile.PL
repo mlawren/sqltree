@@ -1,6 +1,6 @@
 use inc::Module::Install;
 license 'Gpl_3';
-name 'SQL-Tree';
+name 'App-sqltree';
 all_from 'lib/App/sqltree.pm';
 readme_from 'lib/App/sqltree.pm';
 
@@ -21,7 +21,7 @@ tests_recursive 't';
 install_script 'bin/sqltree';
 install_share 'share';
 
-resources repository => 'git://github.com/mlawren/p5-SQL-Tree.git';
+resources repository => 'git://github.com/mlawren/p5-App-sqltree.git';
 
 WriteAll;
 
