@@ -366,7 +366,9 @@ END;
 
 CREATE TRIGGER
     tree_bu_[% table %]_2
-BEFORE UPDATE ON
+BEFORE UPDATE OF
+    [% parent %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     NEW.[% parent %] IS NOT NULL AND
@@ -390,7 +392,9 @@ END;
 
 CREATE TRIGGER
     tree_bu_[% table %]_1
-BEFORE UPDATE ON
+BEFORE UPDATE OF
+    [% pk %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     OLD.[% pk %] != NEW.[% pk %]
