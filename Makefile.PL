@@ -21,7 +21,7 @@ tests_recursive 't';
 install_script 'bin/sqltree';
 install_share 'share';
 
-resources repository => 'git://github.com/mlawren/p5-App-sqltree.git';
+resources repository => 'git://github.com/mlawren/sqltree.git';
 
 WriteAll;
 
