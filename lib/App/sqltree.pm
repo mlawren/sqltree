@@ -85,6 +85,9 @@ sub run {
     my $src = $template->slurp_utf8;
     my $sql;
 
+    $opts->{version} = $VERSION;
+    $opts->{date}    = scalar localtime;
+
     $tt->process( \$src, $opts, \$sql );
 
     if ( $opts->{no_print} ) {
