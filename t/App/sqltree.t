@@ -47,6 +47,7 @@ sub check {
         diag $sql;
         diag 'Wanted: ' . Dumper($struct);
         diag 'Got   : ' . Dumper($result);
+        diag 'At    : ' . (caller)[1] . ':' . (caller)[2];
     }
 }
 
@@ -79,6 +80,7 @@ sub check_tree {
         diag "Select: [child,parent,depth]";
         diag 'Wanted: ' . Dumper($struct);
         diag 'Got   : ' . Dumper($result);
+        diag 'At    : ' . (caller)[1] . ':' . (caller)[2];
     }
 }
 
@@ -105,6 +107,7 @@ sub check_path {
         diag "Select: [id,codename,parent,path]";
         diag 'Wanted: ' . Dumper($struct);
         diag 'Got   : ' . Dumper($result);
+        diag 'At    : ' . (caller)[1] . ':' . (caller)[2];
     }
 }
 
@@ -203,12 +206,6 @@ foreach my $handle (@handles) {
         FROM $table
         WHERE $opts{pk} = ?
     ", [1], [ [1] ], 'user_ai trigger' );
-
-    check( "
-        SELECT user_au
-        FROM $table
-        WHERE $opts{pk} = ?
-    ", [1], [ [0] ], 'user_au trigger' );
 
     check_tree(
         "INSERT INTO $table (id, codename) VALUES (?, ?);",
