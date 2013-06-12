@@ -7,7 +7,7 @@ use OptArgs qw/arg opt optargs/;
 use Path::Tiny qw/path/;
 use Template::Tiny;
 
-our $VERSION = '0.0.5_1';
+our $VERSION = '0.0.5_2';
 
 arg driver => (
     isa     => 'Str',
@@ -106,7 +106,7 @@ App::sqltree - implementation of the sqltree command
 
 =head1 VERSION
 
-0.0.5_1 (2013-06-12)
+0.0.5_2 (2013-06-12)
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,4 @@
-0.0.5_1 (2013-06-11)
+0.0.5_2 (2013-06-11)
 
     API Changes:
         - Distribution renamed from SQL-Tree to App-sqltree.
@@ -11,7 +11,8 @@
         - Refactored based on OptArgs and Template::Tiny.
 
     Bug Fixes:
-        - None
+        - Rework (remove) a SELECT RAISE(IGNORE) that was preventing
+          other (user) triggers from running.
 
 0.04 (2011-11-17)
 
