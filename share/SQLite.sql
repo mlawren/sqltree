@@ -132,7 +132,8 @@ AFTER UPDATE OF
 ON
     [% table %]
 FOR EACH ROW WHEN
-    NEW.[% parent %] IS NOT NULL
+    NEW.[% parent %] IS NOT NULL AND
+    ( OLD.[% parent %] IS NULL OR NEW.[% parent %] != OLD.[% parent %] )
 BEGIN
 
     UPDATE
@@ -175,7 +176,8 @@ AFTER UPDATE OF
 ON
     [% table %]
 FOR EACH ROW WHEN
-    NEW.[% parent %] IS NOT NULL
+    NEW.[% parent %] IS NOT NULL AND 
+    ( OLD.[% parent %] IS NULL OR NEW.[% parent %] != OLD.[% parent %] )
 BEGIN
 
     INSERT INTO
@@ -209,7 +211,8 @@ AFTER UPDATE OF
 ON
     [% table %]
 FOR EACH ROW WHEN
-    OLD.[% parent %] IS NOT NULL
+    OLD.[% parent %] IS NOT NULL AND 
+    ( NEW.[% parent %] IS NULL OR NEW.[% parent %] != OLD.[% parent %])
 BEGIN
     DELETE FROM
         [% tree %]
@@ -278,25 +281,6 @@ BEGIN
 
 END;
 [%- END -%]
-
-------------------------------SPLIT------------------------------
-
-/*
- If there was no change to the parent then we can skip the rest of the
- triggers
-*/
-
-CREATE TRIGGER
-    tree_au_[% table %]_3
-AFTER UPDATE ON
-    [% table %]
-FOR EACH ROW WHEN
-    (OLD.[% parent %] IS NULL AND NEW.[% parent %] IS NULL) OR
-    ((OLD.[% parent %] IS NOT NULL and NEW.[% parent %] IS NOT NULL) AND
-     (OLD.[% parent %] = NEW.[% parent %]))
-BEGIN
-    SELECT RAISE (IGNORE);
-END;
 
 [%- IF path -%]
 
