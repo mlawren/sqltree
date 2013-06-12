@@ -155,42 +155,41 @@ foreach my $handle (@handles) {
             $opts{pk} $opts{type} primary key,
             $opts{parent} $opts{type} references $table($opts{pk}),
             codename text,
-            user_ai integer default 0,
-            user_au integer default 0
+            junk text
         );" );
 
     $dbh->do( "
+        CREATE TABLE t(
+            id $opts{type} PRIMARY KEY,
+            val integer
+        );" );
+
+    if ( $handle->dbd eq 'SQLite' ) {
+        $dbh->do( "
         CREATE TRIGGER
             user_ai
         AFTER INSERT ON
             $table
         FOR EACH ROW
         BEGIN
-            UPDATE
-                $table
-            SET
-                user_ai = 1
-            WHERE
-                $opts{pk} = NEW.$opts{pk}
-            ;
+            INSERT INTO t(id,val) VALUES(NEW.$opts{pk}, 1);
         END;" );
 
-    $dbh->do( "
+        $dbh->do( "
         CREATE TRIGGER
             user_au
-        AFTER UPDATE ON
+        AFTER UPDATE OF
+            junk
+        ON
             $table
-        FOR EACH ROW WHEN
-            NEW.user_au != OLD.user_au
+        FOR EACH ROW
         BEGIN
             UPDATE
-                $table
+                t
             SET
-                user_au = user_au + 1
-            WHERE
-                $opts{pk} = OLD.$opts{pk}
-            ;
+                val = val + 1;
         END;" );
+    }
 
     $dbh->do($_) for App::sqltree::run( \%opts );
 
@@ -202,9 +201,9 @@ foreach my $handle (@handles) {
     );
 
     check( "
-        SELECT user_ai
-        FROM $table
-        WHERE $opts{pk} = ?
+        SELECT val
+        FROM t
+        WHERE id = ?
     ", [1], [ [1] ], 'user_ai trigger' );
 
     check_tree(
@@ -268,11 +267,22 @@ foreach my $handle (@handles) {
         'update 1'
     );
 
+    my ($old) = $dbh->selectrow_array( "
+        select
+            val
+        from
+            t
+        where
+            $opts{pk} = 3
+    " );
+
+    $dbh->do("update $table set junk = 'stuff' where $opts{pk} = 3");
+
     check( "
-        SELECT user_au
-        FROM $table
-        WHERE $opts{pk} = ?
-    ", [3], [ [1] ], 'user_au trigger' );
+        SELECT val
+        FROM t
+        WHERE id = ?
+    ", [3], [ [ $old + 1 ] ], 'user_au trigger ' . ( $old + 1 ) );
 
     # Move some top-level object to become child object:
     check_tree(
