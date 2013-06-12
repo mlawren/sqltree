@@ -151,8 +151,43 @@ foreach my $handle (@handles) {
         CREATE TABLE $table(
             $opts{pk} $opts{type} primary key,
             $opts{parent} $opts{type} references $table($opts{pk}),
-            codename text
+            codename text,
+            user_ai integer default 0,
+            user_au integer default 0
         );" );
+
+    $dbh->do( "
+        CREATE TRIGGER
+            user_ai
+        AFTER INSERT ON
+            $table
+        FOR EACH ROW
+        BEGIN
+            UPDATE
+                $table
+            SET
+                user_ai = 1
+            WHERE
+                $opts{pk} = NEW.$opts{pk}
+            ;
+        END;" );
+
+    $dbh->do( "
+        CREATE TRIGGER
+            user_au
+        AFTER UPDATE ON
+            $table
+        FOR EACH ROW WHEN
+            NEW.user_au != OLD.user_au
+        BEGIN
+            UPDATE
+                $table
+            SET
+                user_au = user_au + 1
+            WHERE
+                $opts{pk} = OLD.$opts{pk}
+            ;
+        END;" );
 
     $dbh->do($_) for App::sqltree::run( \%opts );
 
@@ -162,6 +197,18 @@ foreach my $handle (@handles) {
         [ [ 1, 1, 0 ], ],
         'insert 1'
     );
+
+    check( "
+        SELECT user_ai
+        FROM $table
+        WHERE $opts{pk} = ?
+    ", [1], [ [1] ], 'user_ai trigger' );
+
+    check( "
+        SELECT user_au
+        FROM $table
+        WHERE $opts{pk} = ?
+    ", [1], [ [0] ], 'user_au trigger' );
 
     check_tree(
         "INSERT INTO $table (id, codename) VALUES (?, ?);",
@@ -223,6 +270,12 @@ foreach my $handle (@handles) {
         ],
         'update 1'
     );
+
+    check( "
+        SELECT user_au
+        FROM $table
+        WHERE $opts{pk} = ?
+    ", [3], [ [1] ], 'user_au trigger' );
 
     # Move some top-level object to become child object:
     check_tree(
