@@ -385,7 +385,7 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- This implementation doesn't support to the primary key
+ This implementation doesn't support changes to the primary key
 */
 
 CREATE TRIGGER
