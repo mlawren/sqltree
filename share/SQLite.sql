@@ -120,12 +120,16 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- Paths - update all affected rows with the new parent path
+    Handle [% parent %] changes
+
+    4. Update all affected child rows with the new parent path
 */
 
 CREATE TRIGGER
     tree_au_[% table %]_7
-AFTER UPDATE ON
+AFTER UPDATE OF
+    [% parent %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     NEW.[% parent %] IS NOT NULL
@@ -159,12 +163,16 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- Finally, insert tree data relating to the new parent
+    Handle [% parent %] changes
+
+    3. Insert the new tree data relating to the new parent
 */
 
 CREATE TRIGGER
     tree_au_[% table %]_6
-AFTER UPDATE ON
+AFTER UPDATE OF
+    [% parent %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     NEW.[% parent %] IS NOT NULL
@@ -189,12 +197,16 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- Remove the tree data relating to the old parent
+    Handle [% parent %] changes
+
+    2. Remove the tree data relating to the old parent
 */
 
 CREATE TRIGGER
     tree_au_[% table %]_5
-AFTER UPDATE ON
+AFTER UPDATE OF
+    [% parent %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     OLD.[% parent %] IS NOT NULL
@@ -228,13 +240,16 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- Path changes - Remove the leading paths of the old parent. This has to
- happen before we make changes to [% tree %].
+    Handle [% parent %] changes
+
+    1. Remove parent part of the path
 */
 
 CREATE TRIGGER
     tree_au_[% table %]_4
-AFTER UPDATE ON
+AFTER UPDATE OF
+    [% parent %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     OLD.[% parent %] IS NOT NULL
@@ -288,7 +303,7 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- Handle from_path column changes
+ Handle changes to the [% path_from %] column
 */
 
 CREATE TRIGGER
