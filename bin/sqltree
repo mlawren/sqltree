@@ -12,13 +12,13 @@ __END__
 
 sqltree - hierarchical data (tree) implementation in SQL
 
-=head1 SYNOPSIS
-
-  sqltree [DRIVER] [TABLE] [PK] [PARENT] [TYPE]
-
 =head1 VERSION
 
 0.0.5_2 (2013-06-12)
+
+=head1 SYNOPSIS
+
+  sqltree [DRIVER] [TABLE] [PK] [PARENT] [TYPE]
 
 =head1 DESCRIPTION
 
