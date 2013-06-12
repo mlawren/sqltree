@@ -145,7 +145,7 @@ END;
 */
 
 CREATE TRIGGER
-    tree_au_[% table %]_7
+    tree_au_[% table %]_5
 AFTER UPDATE OF
     [% parent %]
 ON
@@ -189,7 +189,7 @@ END;
 */
 
 CREATE TRIGGER
-    tree_au_[% table %]_6
+    tree_au_[% table %]_4
 AFTER UPDATE OF
     [% parent %]
 ON
@@ -224,7 +224,7 @@ END;
 */
 
 CREATE TRIGGER
-    tree_au_[% table %]_5
+    tree_au_[% table %]_3
 AFTER UPDATE OF
     [% parent %]
 ON
@@ -268,7 +268,7 @@ END;
 */
 
 CREATE TRIGGER
-    tree_au_[% table %]_4
+    tree_au_[% table %]_2
 AFTER UPDATE OF
     [% parent %]
 ON
