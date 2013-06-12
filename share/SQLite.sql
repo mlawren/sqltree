@@ -288,16 +288,48 @@ END;
 ------------------------------SPLIT------------------------------
 
 /*
- If the from_path column has changed then update the path
+ Handle from_path column changes
 */
 
 CREATE TRIGGER
-    tree_au_[% table %]_2
-AFTER UPDATE ON
+    tree_au_[% table %]_1
+AFTER UPDATE OF
+    [% path_from %]
+ON
     [% table %]
 FOR EACH ROW WHEN
     OLD.[% path_from %] != NEW.[% path_from %]
 BEGIN
+
+    /*
+        First of all the current row
+    */
+
+    UPDATE
+        [% table %]
+    SET
+        [% path %] = 
+            CASE WHEN
+                NEW.[% parent %] IS NOT NULL
+            THEN
+                (SELECT
+                    [% path %]
+                 FROM
+                    [% table %]
+                 WHERE
+                    [% pk %] = NEW.[% parent %]
+                ) || '/' || [% path_from %]
+            ELSE
+                [% path_from %]
+            END
+    WHERE
+        [% pk %] = OLD.[% pk %]
+    ;
+
+    /*
+        Then all of the child rows
+    */
+
     UPDATE
         [% table %]
     SET
@@ -319,44 +351,10 @@ BEGIN
                 parent = OLD.[% pk %] AND depth > 0
         )
     ;
+
 END;
 
-------------------------------SPLIT------------------------------
-
-/*
- If the from_path column has changed then update the path
-*/
-
-CREATE TRIGGER
-    tree_au_[% table %]_1
-AFTER UPDATE ON
-    [% table %]
-FOR EACH ROW WHEN
-    OLD.[% path_from %] != NEW.[% path_from %]
-BEGIN
-    UPDATE
-        [% table %]
-    SET
-        [% path %] = 
-            CASE WHEN
-                NEW.[% parent %] IS NOT NULL
-            THEN
-                (SELECT
-                    [% path %]
-                 FROM
-                    [% table %]
-                 WHERE
-                    [% pk %] = NEW.[% parent %]
-                ) || '/' || [% path_from %]
-            ELSE
-                [% path_from %]
-            END
-    WHERE
-        [% pk %] = OLD.[% pk %]
-    ;
-END;
 [%- END -%]
-
 
 ------------------------------SPLIT------------------------------
 
