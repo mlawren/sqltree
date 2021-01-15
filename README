@@ -1,26 +1,51 @@
-SQL::Tree
-=========
+NAME
+    SQL::Tree - Generate a trigger-based SQL tree implementation
 
-INSTALLATION
+SYNOPSIS
+      use SQL::Tree qw/generate_sql_tree/;
+      use DBI;
 
-To install this module type the following:
+      my %opts = (
+        dbtype    => $dbtype,
+        drop      => $bool,
+        table     => $table,
+        pk        => $pk_column,
+        pktype    => $pktype,
+        parent    => $parent_column,
+        path      => $path_column,
+        path_from => $visual_column,
+      );
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+      my $dbh = DBI->connect(...);
+      foreach my $sql ( generate_sql_tree( %opts ) ) {
+        $dbh->do( $sql );
+      }
 
-DEPENDENCIES
+DESCRIPTION
+    SQL::Tree generates a herarchical data (tree) implementation for
+    SQLite and PostgreSQL using triggers, as described here:
 
-This module requires these other modules and libraries:
+        http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
 
-   Getopt::Long::Descriptive  (CPAN)
+    A single subroutine is exported (on demand) that returns a list of
+    SQL statements:
 
-COPYRIGHT AND LICENCE
+    *   generate_sql_tree( %opts ) -> @str
 
-Copyright (C) 2010 Mark Lawrence <nomad@null.net>
+    See the sqltree documentation for the list of arguments and their
+    meanings.
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 3 of the License, or
-(at your option) any later version.
+SEE ALSO
+    sqltree(1) - command line access to SQL::Tree
+
+AUTHOR
+    Mark Lawrence <nomad@null.net>
+
+COPYRIGHT AND LICENSE
+    Copyright 2010 Mark Lawrence <nomad@null.net>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+

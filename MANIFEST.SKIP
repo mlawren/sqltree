@@ -10,3 +10,4 @@ TODO
 ^blib
 \.bak$
 \.perltidyrc
+\.readme_from
