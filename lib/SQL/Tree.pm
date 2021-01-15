@@ -25,11 +25,11 @@ sub generate_sql_tree {
 sub _generate_SQLite {
     my %opts = ( @_, );
 
-    my $table  = $opts{table}  || confess 'usage: generate needs table';
-    my $pk     = $opts{pk}     || confess 'usage: generate needs pk';
-    my $pktype = $opts{pktype} || confess 'usage: generate needs pktype';
-    my $parent = $opts{parent} || confess 'usage: generate needs parent';
-    my $path   = $opts{path};
+    my $table     = $opts{table}  || confess 'usage: generate needs table';
+    my $pk        = $opts{pk}     || confess 'usage: generate needs pk';
+    my $pktype    = $opts{pktype} || confess 'usage: generate needs pktype';
+    my $parent    = $opts{parent} || confess 'usage: generate needs parent';
+    my $path      = $opts{path};
     my $path_from = $opts{path_from};
 
     if ( $path and !$path_from ) {
@@ -308,11 +308,11 @@ END;
 sub _generate_Pg {
     my %opts = ( @_, );
 
-    my $table  = $opts{table}  || confess 'usage: generate needs table';
-    my $pk     = $opts{pk}     || confess 'usage: generate needs pk';
-    my $pktype = $opts{pktype} || confess 'usage: generate needs pktype';
-    my $parent = $opts{parent} || confess 'usage: generate needs parent';
-    my $path   = $opts{path};
+    my $table     = $opts{table}  || confess 'usage: generate needs table';
+    my $pk        = $opts{pk}     || confess 'usage: generate needs pk';
+    my $pktype    = $opts{pktype} || confess 'usage: generate needs pktype';
+    my $parent    = $opts{parent} || confess 'usage: generate needs parent';
+    my $path      = $opts{path};
     my $path_from = $opts{path_from};
 
     if ( $path and !$path_from ) {

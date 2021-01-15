@@ -6,7 +6,7 @@ use SQL::Tree;
 
 my ( $opt, $usage ) = describe_options(
     prog_name . ' <options>',
-    [ 'dbtype=s', "database type [SQLite|Pg]",         { required => 1 } ],
+    [ 'dbtype=s', "database type [SQLite|Pg]", { required => 1 } ],
     [ 'drop',     "issue DROP statements [optional]" ],
     [ 'table=s',  "the table name",                    { required => 1 } ],
     [ 'pk=s',     "the primary key column of <table>", { required => 1 } ],
@@ -18,7 +18,8 @@ my ( $opt, $usage ) = describe_options(
     [ 'parent=s', "the parent column of <table>", { required => 1 } ],
     [ 'path=s',   "the path column of <table> [optional]" ],
     [
-        'path_from=s', "the colum from which path will be calculated [optional]"
+        'path_from=s',
+        "the colum from which path will be calculated [optional]"
     ],
     [ 'order=s', "the order column of <table> [optional]" ],
     [],

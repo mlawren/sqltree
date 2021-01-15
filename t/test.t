@@ -119,7 +119,7 @@ foreach my $handle (@handles) {
 
     $check_tree->(
         "INSERT INTO $table (id, codename) VALUES (?, ?);",
-        [ 2, 'b' ],
+        [ 2,           'b' ],
         [ [ 1, 1, 0 ], [ 2, 2, 0 ], ],
         'insert 2'
     );
