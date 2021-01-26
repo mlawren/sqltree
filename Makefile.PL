@@ -1,18 +1,30 @@
-use inc::Module::Install;
-license 'Gpl_3';
-name 'SQL-Tree';
-all_from 'lib/SQL/Tree.pm';
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use 5.010;
+use ExtUtils::MakeMaker::CPANfile;
 
-requires 'Getopt::Long::Descriptive' => 0;
-
-test_requires 'Test::More'      => 0;
-test_requires 'Test::Exception' => 0;
-test_requires 'Test::Database'  => 0;
-test_requires 'DBI'             => 0;
-test_requires 'DBD::SQLite'     => 0;
-
-install_script 'bin/sqltree';
-
-resources repository => 'git://github.com/mlawren/sql-tree.git';
-
-WriteAll;
+WriteMakefile(
+    NAME         => 'SQL::Tree',
+    ABSTRACT     => 'Generate a trigger-based SQL tree implementation',
+    AUTHOR       => 'Mark Lawrence <nomad@null.net>',
+    VERSION_FROM => 'lib/SQL/Tree.pm',
+    LICENSE      => 'gpl_3',
+    EXE_FILES    => ['bin/sqltree'],
+    test         => {
+        RECURSIVE_TEST_FILES => 1,
+    },
+    META_MERGE => {
+        'meta-spec' => { version => 2 },
+        resources   => {
+            bugtracker =>
+              { web => 'https//github.com/mlawren/sqltree/issues', },
+            homepage   => 'https//github.com/mlawren/sqltree',
+            repository => {
+                type => 'git',
+                url  => 'ssh://git@github.com/mlawren/sql-tree.git',
+                web  => 'https//github.com/mlawren/sqltree',
+            }
+        },
+    },
+);
