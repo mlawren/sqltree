@@ -6,7 +6,7 @@ use File::ShareDir::Dist 'dist_share';
 use File::Spec;
 use Template::Tiny;
 
-our $VERSION = '0.05_1';
+our $VERSION = '0.05';
 
 my $tt = Template::Tiny->new( TRIM => 0, );
 
@@ -43,7 +43,7 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
 
 =head1 VERSION
 
-0.05_1 (2021-01-27)
+0.05 (yyyy-mm-dd)
 
 =head1 SYNOPSIS
 
