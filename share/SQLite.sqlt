@@ -133,32 +133,28 @@ FOR EACH ROW WHEN
 BEGIN
 
 [% IF path -%]
-    INSERT INTO [%- table %]([%- id -%], path)
-    SELECT
-        src.[% id -%] AS id,
+    UPDATE [%- table %]
+    SET [%- path -%] = (
+            SELECT coalesce(np.[%- path -%] || '[%- separator -%]', '')
+                || NEW.[%- name %]
+            FROM (SELECT 1)
+            LEFT JOIN Entity np
+            ON np.[%- id -%] = NEW.[%- parent_id %]
+        ) ||
         CASE WHEN
-            src.[% id -%] = NEW.[%- id %]
+            [% id -%] = NEW.[%- id %]
         THEN
-            coalesce(np.[%- path -%] || '[%- separator -%]', '')
-                || NEW.[%- name %]
+            ''
         ELSE
-            coalesce(np.[%- path -%] || '[%- separator -%]', '')
-                || NEW.[%- name %]
-                || '[%- separator -%]'
-                || substr(src.[%- path -%],
+            '[%- separator -%]' || substr([%- path -%],
                     length(OLD.[%- path -%] || '[%- separator -%]') + 1)
-        END AS path
-    FROM [%- table %] src
-    LEFT JOIN [%- table -%] np
-    ON np.[%- id -%] = NEW.[%- parent_id %]
+        END
     WHERE
-        src.[%- id -%] IN (
+        [% id -%] IN (
             SELECT DISTINCT [%- id %]
             FROM [%- table_tree %]
             WHERE [%- parent_id -%] = OLD.[%- id %]
         )
-    ON CONFLICT ([%- id -%])
-    DO UPDATE SET [% path -%] = excluded.path
     ;
 [% END %]
 
