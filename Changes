@@ -1,4 +1,4 @@
-0.05_1 (yyyy-mm-dd)
+0.05_1 (2021-01-27)
 
     API / Behaviour Changes:
         - SQL::Tree function is now just "generate(\%args)" and is not

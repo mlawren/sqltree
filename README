@@ -2,7 +2,7 @@ NAME
     SQL::Tree - Generate a trigger-based SQL tree implementation
 
 VERSION
-    0.05_1 (yyyy-mm-dd)
+    0.05_1 (2021-01-27)
 
 SYNOPSIS
         use SQL::Tree;
