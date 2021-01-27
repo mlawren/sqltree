@@ -1,0 +1,194 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use OptArgs2;
+use SQL::Tree;
+
+arg driver => (
+    isa      => 'Str',
+    required => 1,
+    comment  => 'database type (SQLite|Pg)',
+);
+
+arg table => (
+    isa      => 'Str',
+    required => 1,
+    comment  => 'table name',
+);
+
+opt drop => (
+    isa     => 'Bool',
+    default => 1,
+    comment => 'do not add DROP TRIGGER/TABLE statements',
+);
+
+opt help => (
+    isa     => 'Flag',
+    alias   => 'h',
+    ishelp  => 1,
+    comment => 'print help message and exit',
+);
+
+opt id => (
+    isa          => 'Str',
+    default      => 'id',
+    show_default => 1,
+    comment      => 'primary key column',
+);
+
+opt name => (
+    isa     => 'Str',
+    default => 'name',
+    comment => 'source column for path generation',
+);
+
+opt parent_id => (
+    isa          => 'Str',
+    default      => 'parent_id',
+    show_default => 1,
+    comment      => 'parent column name',
+);
+
+opt path => (
+    isa     => 'Str',
+    comment => 'destination column for path',
+);
+
+opt postfix => (
+    isa          => 'Str',
+    default      => '_tree',
+    show_default => 1,
+    comment      => 'postfix for additional table',
+);
+
+opt separator => (
+    isa     => 'Str',
+    default => '/',
+    comment => 'path separation character',
+);
+
+opt type => (
+    isa          => 'Str',
+    default      => 'INTEGER',
+    show_default => 1,
+    comment      => 'primary/parent column type',
+);
+
+print SQL::Tree::generate(optargs);
+
+__END__
+
+=head1 NAME
+
+sqltree - hierarchical data (tree) implementation in SQL
+
+=head1 VERSION
+
+0.05_1 (2021-01-27)
+
+=head1 SYNOPSIS
+
+  sqltree DRIVER TABLE [OPTIONS]
+
+=head1 DESCRIPTION
+
+B<sqltree> generates the SQL for a herarchical data (tree)
+implementation using triggers, as described here:
+
+    http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
+
+This implementation relies on a previously-defined table containing:
+
+=over 4
+
+=item * a single primary key column
+
+=item * a parent column that references the
+primary key
+
+=item * a column to hold path data [optional]
+
+=back
+
+Several triggers are added to this previously-defined table, which
+update a new table holding in-depth tree information.
+
+Output from B<sqltree> can usually be piped directly to the "sqlite3"
+or "psql" command line tools.
+
+=head1 ARGUMENTS
+
+=over 4
+
+=item DRIVER
+
+Must be 'SQLite' or 'Pg'. Patches for other database systems are
+welcome.
+
+=item TABLE
+
+The name of the (existing) table holding the hierarchical data. The
+additional tree table will be postfixed with the value of the
+C<--postfix> option.
+
+=back
+
+=head1 OPTIONS
+
+=over 4
+
+=item --id
+
+The primary key of the source table holding the hierarchical data.
+
+=item --no-drop
+
+Do not generate DROP TABLE/TRIGGER statements preceeding the rest
+of the output.
+
+=item --name
+
+When C<--path> is used this option identifies the source
+column from which path names will be built.
+
+=item --parent_id
+
+The parent column of the source table holding the hierarchical
+data.
+
+=item --path
+
+The destination column into which the tree path will be
+automatically calculated. This column should be defined as TEXT or
+VARCHAR, and should be UNIQUE.
+
+=item --postfix
+
+The postfix added to C<TABLE> tree table name. Defaults to "_tree".
+
+=item --separator
+
+The string that separates components in the generated path. Defaults to "/".
+
+=item --type
+
+The SQL column type of the source table primary key and parent columns.
+
+=back
+
+=head1 SEE ALSO
+
+L<SQL::Tree>(3pm)
+
+=head1 AUTHOR
+
+Mark Lawrence E<lt>nomad@null.netE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2010-2021 Mark Lawrence E<lt>nomad@null.netE<gt>
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 3 of the License, or (at your
+option) any later version.

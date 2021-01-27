@@ -1,0 +1,48 @@
+NAME
+    SQL::Tree - Generate a trigger-based SQL tree implementation
+
+VERSION
+    0.05_1 (2021-01-27)
+
+SYNOPSIS
+        use SQL::Tree;
+
+        my $sql = SQL::Tree::generate({
+            driver    => $DBI_driver_name,
+            drop      => $bool,
+            id        => $primary_key_name,
+            name      => $source_column_name_for_path,
+            parent    => $parent_column_name,
+            path      => $path_column_name,
+            table     => $table_name,
+            type      => $primary_key_type,
+        });
+
+DESCRIPTION
+    SQL::Tree generates a herarchical data (tree) implementation for
+    SQLite and PostgreSQL using triggers, as described here:
+
+        http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
+
+    A single subroutine is provided that returns a list of SQL
+    statements:
+
+    *   generate( \%opts ) -> $str
+
+    See the sqltree documentation for the list of arguments and their
+    meanings.
+
+SEE ALSO
+    sqltree(1) - command line access to SQL::Tree
+
+AUTHOR
+    Mark Lawrence <nomad@null.net>
+
+COPYRIGHT AND LICENSE
+    Copyright 2010-2021 Mark Lawrence <nomad@null.net>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
