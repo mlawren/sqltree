@@ -61,6 +61,12 @@ opt postfix => (
     comment      => 'postfix for additional table',
 );
 
+opt separator => (
+    isa     => 'Str',
+    default => '/',
+    comment => 'path separation character',
+);
+
 opt type => (
     isa          => 'Str',
     default      => 'INTEGER',
@@ -158,7 +164,11 @@ VARCHAR, and should be UNIQUE.
 
 =item --postfix
 
-The postfix added to C<TABLE> tree table name.
+The postfix added to C<TABLE> tree table name. Defaults to "_tree".
+
+=item --separator
+
+The string that separates components in the generated path. Defaults to "/".
 
 =item --type
 

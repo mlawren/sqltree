@@ -61,7 +61,8 @@ BEGIN
 [% IF path %]
     UPDATE [%- table %]
     SET [%- path -%] = (
-        SELECT coalesce(b.[%- path -%] || '/','') || NEW.[%- name %]
+        SELECT coalesce(b.[%- path -%] || '[%- separator -%]','')
+            || NEW.[%- name %]
         FROM (SELECT 1)
         LEFT JOIN [%- table %] b
         ON b.[%- id -%] = NEW.[%- parent_id %]
@@ -138,12 +139,14 @@ BEGIN
         CASE WHEN
             src.[% id -%] = NEW.[%- id %]
         THEN
-            coalesce(np.[%- path -%] || '/', '') || NEW.[%- name %]
-        ELSE
-            coalesce(np.[%- path -%] || '/', '')
+            coalesce(np.[%- path -%] || '[%- separator -%]', '')
                 || NEW.[%- name %]
-                || '/'
-                || substr(src.[%- path -%], length(OLD.[%- path -%] || '/') + 1)
+        ELSE
+            coalesce(np.[%- path -%] || '[%- separator -%]', '')
+                || NEW.[%- name %]
+                || '[%- separator -%]'
+                || substr(src.[%- path -%],
+                    length(OLD.[%- path -%] || '[%- separator -%]') + 1)
         END AS path
     FROM [%- table %] src
     LEFT JOIN [%- table -%] np

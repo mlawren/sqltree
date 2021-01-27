@@ -18,6 +18,8 @@ sub generate {
     $ref->{localtime}  = scalar localtime;
     $ref->{version}    = $VERSION;
 
+    local $ref->{separator} = $ref->{separator} =~ s/'/''/gr;
+
     die 'path requires a name'
       if exists $ref->{path} and not exists $ref->{name};
 
