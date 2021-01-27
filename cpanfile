@@ -12,8 +12,7 @@ on runtime => sub {
 };
 
 on test => sub {
-    requires 'Test::More'      => 0;
-    requires 'Test::Exception' => 0;
+    requires 'Test2::V0' => 0;
 };
 
 on develop => sub {

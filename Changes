@@ -11,7 +11,7 @@
     Dependencies:
         - Remove a bunch of DBI/DBD::SQLite and Test:: stuff (made
           development requirements)
-        - File::ShareDir, OptArgs2, Template::Tiny, ...
+        - File::ShareDir, OptArgs2, Template::Tiny, Test2::V0, ...
 
     Packaging:
         - Migrate to ExtUtils::MakeMaker away from Module::Install.
