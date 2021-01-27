@@ -1,3 +1,21 @@
+0.05 (yyyy-mm-dd)
+
+    API / Behaviour Changes:
+        - SQL::Tree function is now just "generate(\%args)" and is not
+          exported.
+        - sqltree: revamp of all arguments and options
+
+    Enhancements:
+        - Modernizing and refactoring. Much better SQLite code.
+
+    Dependencies:
+        - Remove a bunch of DBI/DBD::SQLite and Test:: stuff (made
+          development requirements)
+        - File::ShareDir, OptArgs2, Template::Tiny, ...
+
+    Packaging:
+        - Migrate to ExtUtils::MakeMaker away from Module::Install.
+
 0.04 (2011-11-17)
 
     API Changes:

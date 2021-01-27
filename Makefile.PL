@@ -3,6 +3,9 @@ use strict;
 use warnings;
 use 5.010;
 use ExtUtils::MakeMaker::CPANfile;
+use File::ShareDir::Install;
+
+install_share 'share';
 
 WriteMakefile(
     NAME         => 'SQL::Tree',
@@ -28,3 +31,7 @@ WriteMakefile(
         },
     },
 );
+
+package MY;
+use File::ShareDir::Install qw(postamble);
+

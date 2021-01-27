@@ -1,25 +1,22 @@
 NAME
     SQL::Tree - Generate a trigger-based SQL tree implementation
 
+VERSION
+    0.05 (yyyy-mm-dd)
+
 SYNOPSIS
-      use SQL::Tree qw/generate_sql_tree/;
-      use DBI;
+        use SQL::Tree;
 
-      my %opts = (
-        dbtype    => $dbtype,
-        drop      => $bool,
-        table     => $table,
-        pk        => $pk_column,
-        pktype    => $pktype,
-        parent    => $parent_column,
-        path      => $path_column,
-        path_from => $visual_column,
-      );
-
-      my $dbh = DBI->connect(...);
-      foreach my $sql ( generate_sql_tree( %opts ) ) {
-        $dbh->do( $sql );
-      }
+        my $sql = SQL::Tree::generate({
+            driver    => $DBI_driver_name,
+            drop      => $bool,
+            id        => $primary_key_name,
+            name      => $source_column_name_for_path,
+            parent    => $parent_column_name,
+            path      => $path_column_name,
+            table     => $table_name,
+            type      => $primary_key_type,
+        });
 
 DESCRIPTION
     SQL::Tree generates a herarchical data (tree) implementation for
@@ -27,10 +24,10 @@ DESCRIPTION
 
         http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
 
-    A single subroutine is exported (on demand) that returns a list of
-    SQL statements:
+    A single subroutine is provided that returns a list of SQL
+    statements:
 
-    *   generate_sql_tree( %opts ) -> @str
+    *   generate( \%opts ) -> $str
 
     See the sqltree documentation for the list of arguments and their
     meanings.
@@ -42,7 +39,7 @@ AUTHOR
     Mark Lawrence <nomad@null.net>
 
 COPYRIGHT AND LICENSE
-    Copyright 2010 Mark Lawrence <nomad@null.net>
+    Copyright 2010-2021 Mark Lawrence <nomad@null.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
