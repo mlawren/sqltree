@@ -80,7 +80,7 @@ opt type => (
     comment      => 'primary/parent column type',
 );
 
-print SQL::Tree::generate(optargs);
+print SQL::Tree->new(optargs)->generate;
 
 __END__
 
