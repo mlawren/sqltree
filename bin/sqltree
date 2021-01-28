@@ -153,7 +153,8 @@ C<--postfix> option.
 
 =item --id, -i STR
 
-The primary key of the source table holding the hierarchical data. Defaults to "id".
+The primary key of the source table holding the hierarchical data.
+Defaults to "id".
 
 =item --no-comments, -C
 
@@ -165,13 +166,13 @@ Include DROP TABLE/TRIGGER statements.
 
 =item --name, -n STR
 
-When C<--path> is used this option identifies the source
-column from which path names will be built. Defaults to "name".
+When C<--path> is used this option identifies the source column from
+which path names will be built. Defaults to "name".
 
 =item --parent_id, -I STR
 
-The parent column of the source table holding the hierarchical
-data. Defaults to "parent_id".
+The parent column of the source table holding the hierarchical data.
+Defaults to "parent_id".
 
 =item --path, -p STR
 
@@ -181,15 +182,18 @@ and should be UNIQUE.
 
 =item --postfix, -f STR
 
-The string postfixed to C<TABLE> to name the additional table. Defaults to "_tree".
+The string postfixed to C<TABLE> to name the additional table. Defaults
+to "_tree".
 
 =item --separator, -s CHAR
 
-The string that separates components in the C<"--path"> column. Defaults to "/".
+The string that separates components in the C<"--path"> column.
+Defaults to "/".
 
 =item --type, -t TYPE
 
-The SQL column type of the source table primary key and parent columns. Defaults to "INTEGER".
+The SQL column type of the source table primary key and parent columns.
+Defaults to "INTEGER".
 
 =back
 
@@ -209,3 +213,4 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
+
