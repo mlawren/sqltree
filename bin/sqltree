@@ -23,9 +23,8 @@ opt comments => (
 );
 
 opt drop => (
-    isa     => 'Bool',
-    default => 1,
-    comment => 'do not add DROP TRIGGER/TABLE statements',
+    isa     => 'Flag',
+    comment => 'include DROP TRIGGER/TABLE statements',
 );
 
 opt help => (
@@ -151,10 +150,9 @@ The primary key of the source table holding the hierarchical data. Defaults to "
 
 Do not include descriptive comments.
 
-=item --no-drop
+=item --drop
 
-Do not generate DROP TABLE/TRIGGER statements preceeding the rest
-of the output.
+Include DROP TABLE/TRIGGER statements.
 
 =item --name
 
