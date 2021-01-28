@@ -2,7 +2,7 @@ NAME
     sqltree - hierarchical data (tree) implementation in SQL
 
 VERSION
-    0.05 (2021-01-28)
+    0.06 (yyyy-mm-dd)
 
 SYNOPSIS
       sqltree DRIVER TABLE [OPTIONS]

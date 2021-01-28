@@ -7,7 +7,7 @@ use File::ShareDir::Dist 'dist_share';
 use File::Spec;
 use Template::Tiny;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our $INLINE  = {
     comments      => {},
     driver        => { required => 1, },
@@ -120,7 +120,7 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
 
 =head1 VERSION
 
-0.05 (2021-01-28)
+0.06 (yyyy-mm-dd)
 
 =head1 SYNOPSIS
 
@@ -145,8 +145,7 @@ SQLite and PostgreSQL using triggers, as described here:
 
     http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
 
-A single subroutine is provided that returns a list of SQL
-statements:
+A single subroutine is provided that returns a list of SQL statements:
 
 =over 4
 
@@ -173,3 +172,4 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 3 of the License, or (at your
 option) any later version.
+
