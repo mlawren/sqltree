@@ -19,11 +19,13 @@ arg table => (
 opt comments => (
     isa     => 'Bool',
     default => 1,
+    alias   => 'C',
     comment => 'do not include descriptive comments',
 );
 
 opt drop => (
     isa     => 'Flag',
+    alias   => 'd',
     comment => 'include DROP TRIGGER/TABLE statements',
 );
 
@@ -38,12 +40,14 @@ opt id => (
     isa          => 'Str',
     default      => 'id',
     show_default => 1,
+    alias        => 'i',
     comment      => 'primary key column',
 );
 
 opt name => (
     isa     => 'Str',
     default => 'name',
+    alias   => 'n',
     comment => 'source column for path generation',
 );
 
@@ -51,11 +55,13 @@ opt parent_id => (
     isa          => 'Str',
     default      => 'parent_id',
     show_default => 1,
+    alias        => 'I',
     comment      => 'parent column name',
 );
 
 opt path => (
     isa     => 'Str',
+    alias   => 'p',
     comment => 'destination column for path',
 );
 
@@ -63,12 +69,14 @@ opt postfix => (
     isa          => 'Str',
     default      => '_tree',
     show_default => 1,
+    alias        => 'f',
     comment      => 'postfix for additional table',
 );
 
 opt separator => (
     isa     => 'Str',
     default => '/',
+    alias   => 's',
     comment => 'path separation character',
 );
 
@@ -76,6 +84,7 @@ opt type => (
     isa          => 'Str',
     default      => 'INTEGER',
     show_default => 1,
+    alias        => 't',
     comment      => 'primary/parent column type',
 );
 
@@ -142,43 +151,43 @@ C<--postfix> option.
 
 =over 4
 
-=item --id
+=item --id, -i STR
 
 The primary key of the source table holding the hierarchical data. Defaults to "id".
 
-=item --no-comments
+=item --no-comments, -C
 
 Do not include descriptive comments.
 
-=item --drop
+=item --drop, -d
 
 Include DROP TABLE/TRIGGER statements.
 
-=item --name
+=item --name, -n STR
 
 When C<--path> is used this option identifies the source
 column from which path names will be built. Defaults to "name".
 
-=item --parent_id
+=item --parent_id, -I STR
 
 The parent column of the source table holding the hierarchical
 data. Defaults to "parent_id".
 
-=item --path
+=item --path, -p STR
 
 The destination column into which the tree path will be automatically
 calculated. This column would usually be defined as TEXT or VARCHAR,
 and should be UNIQUE.
 
-=item --postfix
+=item --postfix, -f STR
 
 The string postfixed to C<TABLE> to name the additional table. Defaults to "_tree".
 
-=item --separator
+=item --separator, -s CHAR
 
 The string that separates components in the C<"--path"> column. Defaults to "/".
 
-=item --type
+=item --type, -t TYPE
 
 The SQL column type of the source table primary key and parent columns. Defaults to "INTEGER".
 
