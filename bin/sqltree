@@ -16,6 +16,12 @@ arg table => (
     comment  => 'table name',
 );
 
+opt comments => (
+    isa     => 'Bool',
+    default => 1,
+    comment => 'do not include descriptive comments',
+);
+
 opt drop => (
     isa     => 'Bool',
     default => 1,
@@ -140,6 +146,10 @@ C<--postfix> option.
 =item --id
 
 The primary key of the source table holding the hierarchical data. Defaults to "id".
+
+=item --no-comments
+
+Do not include descriptive comments.
 
 =item --no-drop
 
