@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
-use 5.010;
+use 5.016;
 use ExtUtils::MakeMaker::CPANfile;
 use File::ShareDir::Install;
 
