@@ -1,22 +1,8 @@
-0.05 (yyyy-mm-dd)
-
-    API / Behaviour Changes:
-        - None.
-
-    New Features:
-        - None.
+0.05 (2021-01-28)
 
     Enhancements:
         - Add a --no-comments option.
-
-    Bug Fixes:
-        - None.
-
-    Dependencies:
-        - None.
-
-    Packaging:
-        - None.
+        - Various code cleanups and improvements
 
 0.05_1 (2021-01-27)
 

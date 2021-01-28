@@ -120,7 +120,7 @@ SQL::Tree - Generate a trigger-based SQL tree implementation
 
 =head1 VERSION
 
-0.05 (yyyy-mm-dd)
+0.05 (2021-01-28)
 
 =head1 SYNOPSIS
 
