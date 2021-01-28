@@ -11,6 +11,8 @@ my $args = {
     parent_id => 'parent_id',
 };
 
-like( SQL::Tree::generate($args), qr/CREATE TABLE test_tree/, 'basic use' );
+my $t = SQL::Tree->new($args);
+isa_ok $t, 'SQL::Tree';
+like( $t->generate(), qr/CREATE TABLE test_tree/, 'basic use' );
 
 done_testing();

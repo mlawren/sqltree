@@ -1,45 +1,86 @@
 NAME
-    SQL::Tree - Generate a trigger-based SQL tree implementation
+    sqltree - hierarchical data (tree) implementation in SQL
 
 VERSION
-    0.05_1 (2021-01-27)
+    0.05 (2021-01-28)
 
 SYNOPSIS
-        use SQL::Tree;
-
-        my $sql = SQL::Tree::generate({
-            driver    => $DBI_driver_name,
-            drop      => $bool,
-            id        => $primary_key_name,
-            name      => $source_column_name_for_path,
-            parent    => $parent_column_name,
-            path      => $path_column_name,
-            table     => $table_name,
-            type      => $primary_key_type,
-        });
+      sqltree DRIVER TABLE [OPTIONS]
 
 DESCRIPTION
-    SQL::Tree generates a herarchical data (tree) implementation for
-    SQLite and PostgreSQL using triggers, as described here:
+    sqltree generates the SQL for a herarchical data (tree)
+    implementation using triggers, as described here:
 
         http://www.depesz.com/index.php/2008/04/11/my-take-on-trees-in-sql/
 
-    A single subroutine is provided that returns a list of SQL
-    statements:
+    This implementation relies on a previously-defined table containing:
 
-    *   generate( \%opts ) -> $str
+    *   a single primary key column
 
-    See the sqltree documentation for the list of arguments and their
-    meanings.
+    *   a parent column that references the primary key
+
+    *   a column to hold path data [optional]
+
+    Several triggers are added to this previously-defined table, which
+    update a new table holding in-depth tree information.
+
+    Output from sqltree can usually be piped directly to the "sqlite3"
+    or "psql" command line tools.
+
+ARGUMENTS
+    DRIVER
+        Must be 'SQLite' or 'Pg'. Patches for other database systems are
+        welcome.
+
+    TABLE
+        The name of the (existing) table holding the hierarchical data.
+        The additional tree table will be postfixed with the value of
+        the "--postfix" option.
+
+OPTIONS
+    --id, -i STR
+        The primary key of the source table holding the hierarchical
+        data. Defaults to "id".
+
+    --no-comments, -C
+        Do not include descriptive comments.
+
+    --drop, -d
+        Include DROP TABLE/TRIGGER statements.
+
+    --name, -n STR
+        When "--path" is used this option identifies the source column
+        from which path names will be built. Defaults to "name".
+
+    --parent_id, -I STR
+        The parent column of the source table holding the hierarchical
+        data. Defaults to "parent_id".
+
+    --path, -p STR
+        The destination column into which the tree path will be
+        automatically calculated. This column would usually be defined
+        as TEXT or VARCHAR, and should be UNIQUE.
+
+    --postfix, -f STR
+        The string postfixed to "TABLE" to name the additional table.
+        Defaults to "_tree".
+
+    --separator, -s CHAR
+        The string that separates components in the "--path" column.
+        Defaults to "/".
+
+    --type, -t TYPE
+        The SQL column type of the source table primary key and parent
+        columns. Defaults to "INTEGER".
 
 SEE ALSO
-    sqltree(1) - command line access to SQL::Tree
+    SQL::Tree(3pm)
 
 AUTHOR
     Mark Lawrence <nomad@null.net>
 
 COPYRIGHT AND LICENSE
-    Copyright 2010-2021 Mark Lawrence <nomad@null.net>
+    Copyright (C) 2010-2021 Mark Lawrence <nomad@null.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -16,8 +16,7 @@ on test => sub {
 };
 
 on develop => sub {
-
-    #    requires 'Class::Inline' => 0;
+    requires 'Class::Inline'   => 0;
     requires 'Test::More'      => 0;
     requires 'Test::Exception' => 0;
     requires 'Test::Database'  => 0;

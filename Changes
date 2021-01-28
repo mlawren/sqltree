@@ -1,3 +1,9 @@
+0.05 (2021-01-28)
+
+    Enhancements:
+        - Add a --no-comments option.
+        - Various code cleanups and improvements
+
 0.05_1 (2021-01-27)
 
     API / Behaviour Changes:
