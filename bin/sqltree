@@ -139,7 +139,7 @@ C<--postfix> option.
 
 =item --id
 
-The primary key of the source table holding the hierarchical data.
+The primary key of the source table holding the hierarchical data. Defaults to "id".
 
 =item --no-drop
 
@@ -149,30 +149,30 @@ of the output.
 =item --name
 
 When C<--path> is used this option identifies the source
-column from which path names will be built.
+column from which path names will be built. Defaults to "name".
 
 =item --parent_id
 
 The parent column of the source table holding the hierarchical
-data.
+data. Defaults to "parent_id".
 
 =item --path
 
-The destination column into which the tree path will be
-automatically calculated. This column should be defined as TEXT or
-VARCHAR, and should be UNIQUE.
+The destination column into which the tree path will be automatically
+calculated. This column would usually be defined as TEXT or VARCHAR,
+and should be UNIQUE.
 
 =item --postfix
 
-The postfix added to C<TABLE> tree table name. Defaults to "_tree".
+The string postfixed to C<TABLE> to name the additional table. Defaults to "_tree".
 
 =item --separator
 
-The string that separates components in the generated path. Defaults to "/".
+The string that separates components in the C<"--path"> column. Defaults to "/".
 
 =item --type
 
-The SQL column type of the source table primary key and parent columns.
+The SQL column type of the source table primary key and parent columns. Defaults to "INTEGER".
 
 =back
 
