@@ -146,7 +146,7 @@ BEGIN
             SELECT coalesce(np.[%- path -%] || '[%- separator -%]', '')
                 || NEW.[%- name %]
             FROM (SELECT 1)
-            LEFT JOIN Entity np
+            LEFT JOIN [%- table -%] np
             ON np.[%- id -%] = NEW.[%- parent_id %]
         ) ||
         CASE WHEN
